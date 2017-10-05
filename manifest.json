@@ -3,9 +3,11 @@
 	"author": "aqt",
 
 	"homepage_url": "https://github.com/aqt/webext-popup",
-	"name": "PopUp",
-	"version": "1.1",
-	"description": "Create a popup of the current page with minimal browser ui",
+	"name": "__MSG_extensionName__",
+	"version": "1.2.0",
+	"description": "__MSG_extensionDescription__",
+
+	"default_locale": "en",
 
 	"icons": {
 		"16": "icons/icon16.png",
@@ -13,7 +15,15 @@
 		"48": "icons/icon48.png"
 	},
 
-	"permissions": [ "activeTab" ],
+	"permissions": [
+		"activeTab", // Get URL of current tab
+		"contextMenus", // Display menus here and there
+		"storage" // Save/load settings
+	],
+
+	"background": {
+		"scripts": [ "content/background/background.js" ]
+	},
 
 	"browser_action": {
 		"default_icon": {
@@ -22,7 +32,12 @@
 			"48": "icons/icon48.png"
 		},
 
-		"default_title": "PopUp",
-		"default_popup": "popup.html"
+		"default_title": "__MSG_extensionName__",
+		"default_popup": "content/button/panel.html"
+	},
+
+	"options_ui": {
+		"page": "content/settings/settings.html",
+		"browser_style": true
 	}
 }

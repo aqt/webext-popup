@@ -1,0 +1,49 @@
+{
+	"extensionName": {
+		"message": "PopUp",
+		"description": "Title of the extension"
+	},
+
+	"extensionDescription": {
+		"message": "Create a popup of pages, with minimal browser UI",
+		"description": "Description of the extension"
+	},
+
+
+	"menu-item_tab_popup": {
+		"message": "Move to a new popup",
+		"description": "Menu item for tabs"
+	},
+
+	"menu-item_link_popup": {
+		"message": "Open as a popup",
+		"description": "Menu item for links"
+	},
+
+
+	"settings_title": {
+		"message": "Settings",
+		"description": "Settings page title"
+	},
+
+	"settings_context-menus": {
+		"message": "Context menus",
+		"description": "Settings section title for context menus"
+	},
+
+	"settings_context-menus_tabs": {
+		"message": "Show on tabs",
+		"description": "Settings label for context menus on Tabs"
+	},
+
+	"settings_context-menus_links": {
+		"message": "Show on links",
+		"description": "Settings label for context menus on Links"
+	},
+
+
+	"button_error_open": {
+		"message": "Cannot open a popup for this URL",
+		"description": "Displayed when URL cannot be opened"
+	}
+}
