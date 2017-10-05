@@ -36,6 +36,12 @@
 		"default_popup": "content/button/panel.html"
 	},
 
+	"applications": {
+		"gecko": {
+			"id": "{7345afcc-32b6-4a3d-8e05-189bc954e9e7}"
+		}
+	},
+
 	"options_ui": {
 		"page": "content/settings/settings.html",
 		"browser_style": true
