@@ -41,9 +41,39 @@
 		"description": "Settings label for context menus on Links"
 	},
 
+	"settings_button": {
+		"message": "Button",
+		"description": "Settings section title for button action"
+	},
 
-	"button_error_open": {
-		"message": "Cannot open a popup for this URL",
-		"description": "Displayed when URL cannot be opened"
+	"settings_button-action": {
+		"message": "Button action",
+		"description": "Settings label for button action"
+	},
+
+	"settings_button-action_menu": {
+		"message": "Menu",
+		"description": "Settings label for button action type"
+	},
+
+	"settings_button-action_popup": {
+		"message": "Create popup of current tab",
+		"description": "Settings label for button action"
+	},
+
+
+	"button_menu-item_open": {
+		"message": "Open this tab as a popup",
+		"description": "Item in button menu for converting current tab"
+	},
+
+	"button_menu-item_restore": {
+		"message": "Restore to tab...",
+		"description": "Item in button menu for restoring tab"
+	},
+
+	"button_menu-item_restore-unknown_title": {
+		"message": "Unknown title",
+		"description": "Error text for item in button menu for restoring tabs"
 	}
 }

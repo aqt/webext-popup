@@ -1,3 +1,8 @@
+.col-spacing td {
+	padding-right: 4px;
+}
+
 input[type="checkbox"] {
 	vertical-align: middle;
+	margin: 4px;
 }

@@ -20,7 +20,6 @@ function initializeListeners() {
 	attachChangeListener();
 }
 
-
 function attachChangeListener() {
 	elements.forEach(element => {
 		element.addEventListener("change", onChange);
@@ -47,8 +46,14 @@ function loadSettings() {
 			let value = result[key];
 			let element = document.querySelector(`#${key}`);
 
+			if (!element) {
+				console.warn(`No settings element matching saved setting "${key}"`);
+				return;
+			}
+
 			switch(element.type.toLowerCase()) {
 				default:
+					console.log(`Using default for settings element of type "${element.type}"`)
 					element.value = value;
 					break;
 
