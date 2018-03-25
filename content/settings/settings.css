@@ -14,3 +14,11 @@ legend {
 fieldset:not(:first-child) {
 	margin-top: 2em;
 }
+
+th {
+	text-align: left;
+}
+
+.description {
+	margin-bottom: 1em;
+}

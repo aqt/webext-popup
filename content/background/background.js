@@ -1,3 +1,5 @@
+let _addonSettings;
+
 browser.runtime.onInstalled.addListener(details => {
 	console.log("New install/update, creating default settings");
 
@@ -88,6 +90,17 @@ function restoreTab(tab) {
 function open_popup(settings) {
 	let data = { "type": "popup" };
 
+	let w = _addonSettings["popup-position_width_default"];
+	let h = _addonSettings["popup-position_height_default"];
+
+	if (w) {
+		data.width = w * 1;
+	}
+
+	if (h) {
+		data.height = h * 1;
+	}
+
 	if (settings.hasOwnProperty("url")) {
 		data.url = settings.url;
 	} else if (settings.hasOwnProperty("tab")) {
@@ -106,6 +119,8 @@ function open_popup(settings) {
 
 function actOnSettings(settings) {
 	console.log("Acting on new settings");
+
+	_addonSettings = settings;
 
 	browser.contextMenus.removeAll();
 

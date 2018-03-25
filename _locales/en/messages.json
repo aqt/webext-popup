@@ -61,6 +61,46 @@
 		"description": "Settings label for button action"
 	},
 
+	"settings_popup-position": {
+		"message": "Popup position",
+		"description": "Settings label for popup position"
+	},
+
+	"settings_popup-position_description": {
+		"message": "Leave fields empty for default values",
+		"description": "Settings description for popup position"
+	},
+
+	"settings_popup-position_domain": {
+		"message": "Domain ?",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_x": {
+		"message": "X",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_y": {
+		"message": "Y",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_width": {
+		"message": "Width",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_height": {
+		"message": "Height",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_domain_description": {
+		"message": "Entries without a subdomain (e.g. www) apply to all subdomains. Multiple domains can be used by separating the entries with a comma (,). Example value: github.com,www.google.com",
+		"description": "Settings description for popup position column"
+	},
+
 
 	"button_menu-item_open": {
 		"message": "Open this tab as a popup",
