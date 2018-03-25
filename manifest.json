@@ -16,10 +16,10 @@
 	},
 
 	"permissions": [
-		"activeTab", // Get URL of current tab
-		"contextMenus", // Display menus here and there
-		"storage", // Save/load settings
-		"tabs" // Ability to view tab titles...
+		"activeTab",
+		"contextMenus",
+		"storage",
+		"tabs"
 	],
 
 	"background": {
