@@ -48,7 +48,7 @@ function loadSettings() {
 
 			if (!element) {
 				console.warn(`No settings element matching saved setting "${key}"`);
-				return;
+				continue;
 			}
 
 			switch(element.type.toLowerCase()) {
