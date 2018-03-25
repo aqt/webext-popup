@@ -6,3 +6,11 @@ input[type="checkbox"] {
 	vertical-align: middle;
 	margin: 4px;
 }
+
+legend {
+	padding: 0 3px;
+}
+
+fieldset:not(:first-child) {
+	margin-top: 2em;
+}
