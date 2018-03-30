@@ -101,13 +101,45 @@ function open_popup(settings) {
 		data.height = h * 1;
 	}
 
+	let url = "";
+
 	if (settings.hasOwnProperty("url")) {
 		data.url = settings.url;
+		url = settings.url;
 	} else if (settings.hasOwnProperty("tab")) {
 		data.tabId = settings.tab.id;
+		url = settings.tab.url;
 	} else {
 		console.warn("Unknown popup type", settings);
 		return;
+	}
+
+	// Set data arguments from settings
+	if (_addonSettings.hasOwnProperty("popup-position")) {
+		let target = document.createElement("a");
+		target.setAttribute("href", url);
+
+		outer_loop:
+		for (let row of _addonSettings["popup-position"]) {
+			let domains;
+
+			// User may want to add multiple domains
+			if (~row.domain.indexOf(",")) {
+				domains = row.domain.split(",");
+			} else {
+				domains = [ row.domain ];
+			}
+
+			for (let d of domains) {
+				// Match subdomains as well
+				if (target.hostname.endsWith(d.trim())) {
+					data.width = row.width * 1;
+					data.height = row.height * 1;
+
+					break outer_loop;
+				}
+			}
+		}
 	}
 
 	try {
