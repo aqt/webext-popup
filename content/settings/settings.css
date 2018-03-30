@@ -22,3 +22,7 @@ th {
 .description {
 	margin-bottom: 1em;
 }
+
+.hidden {
+	display: none;
+}

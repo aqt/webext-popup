@@ -1,8 +1,9 @@
-let elements;
+let singleSettingElements;
+let multiSettingElements;
 
 function DOMLoaded() {
-	let attr = "data-setting";
-	elements = document.querySelectorAll(`[${attr}]`);
+	singleSettingElements = [...document.querySelectorAll(`[data-setting]`)];
+	multiSettingElements = [...document.querySelectorAll(`[data-setting-list]`)];
 
 	button_save.setAttribute("disabled", "disabled");
 
@@ -13,20 +14,30 @@ function DOMLoaded() {
 function initializeListeners() {
 	button_save.addEventListener("click", () => {
 		button_save.setAttribute("disabled", "disabled");
-		// attachChangeListener();
 		saveSettings();
 	});
 
-	attachChangeListener();
+	// Button functionality to add new row to list settings
+	let addListItemButtons = document.querySelectorAll(`[data-setting-list-item-add]`);
+	for (let button of addListItemButtons) {
+		for (let parent = button; parent; parent = parent.parentElement) {
+			if (parent.tagName.toLowerCase() === "table") {
+				button.addEventListener("click", e => addNewRowToList(parent));
+				continue;
+			}
+		}
+	}
+
+	attachChangeListener(singleSettingElements);
 }
 
-function attachChangeListener() {
+function attachChangeListener(elements) {
 	elements.forEach(element => {
 		element.addEventListener("change", onChange);
 	});
 }
 
-function detachChangeListener() {
+function detachChangeListener(elements) {
 	elements.forEach(element => {
 		element.removeEventListener("change", onChange);
 	});
@@ -34,7 +45,6 @@ function detachChangeListener() {
 
 function onChange() {
 	button_save.removeAttribute("disabled");
-	// detachChangeListener();
 }
 
 
@@ -51,15 +61,30 @@ function loadSettings() {
 				continue;
 			}
 
-			switch(element.type.toLowerCase()) {
-				default:
-					console.log(`Using default for settings element of type "${element.type}"`)
-					element.value = value;
-					break;
+			if (value instanceof Array) {
+				// List setting
 
-				case "checkbox":
-					element.checked = value;
-					break;
+				for (let rowObject of value) {
+					let newRow = addNewRowToList(element);
+
+					for (let col of Object.keys(rowObject)) {
+						let input = newRow.querySelector(`[data-setting-id="${ col }"]`);
+						input.value = rowObject[col];
+					}
+				}
+			} else {
+				// Single setting
+
+				switch(element.type.toLowerCase()) {
+					default:
+						console.log(`Using default for settings element of type "${element.type}"`)
+						element.value = value;
+						break;
+
+					case "checkbox":
+						element.checked = value;
+						break;
+				}
 			}
 		}
 	});
@@ -70,7 +95,7 @@ function saveSettings() {
 
 	let batch = {};
 
-	elements.forEach(element => {
+	singleSettingElements.forEach(element => {
 		let val = undefined;
 
 		switch(element.type.toLowerCase()) {
@@ -88,7 +113,54 @@ function saveSettings() {
 		}
 	});
 
+	multiSettingElements.forEach(element => {
+		let val = [];
+
+		let listItems = element.querySelectorAll("[data-setting-list-item]");
+
+		for (let row of listItems) {
+			let item = {};
+
+			let subkeys = row.querySelectorAll("[data-setting-id]");
+
+			for (let sk of subkeys) {
+				let id = sk.getAttribute("data-setting-id");
+				let value = sk.value;
+
+				item[id] = value;
+			}
+
+			val.push(item);
+		}
+
+		batch[element.id] = val;
+	});
+
 	browser.storage.local.set(batch);
+}
+
+function addNewRowToList(table) {
+	let template = table.querySelector("[data-setting-list-item-template]");
+
+	if (!template) {
+		console.warn("No template found for table:", table);
+		return;
+	}
+
+	let templateClone = template.cloneNode(true);
+	templateClone.classList.remove("hidden");
+	templateClone.removeAttribute("data-setting-list-item-template");
+	templateClone.setAttribute("data-setting-list-item", "");
+
+	let deleteButton = templateClone.querySelector("[data-setting-list-item-delete]");
+	deleteButton.addEventListener("click", e => { e.target.parentElement.parentElement.remove(); onChange(); });
+
+	attachChangeListener(templateClone.querySelectorAll("[data-setting-id]"));
+
+	let row = table.insertRow(table.rows.length - 1); // Subtract due to add button
+	row.replaceWith(templateClone);
+
+	return templateClone;
 }
 
 document.addEventListener("DOMContentLoaded", DOMLoaded);
