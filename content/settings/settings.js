@@ -69,25 +69,41 @@ function loadSettings() {
 
 					for (let col of Object.keys(rowObject)) {
 						let input = newRow.querySelector(`[data-setting-id="${ col }"]`);
-						input.value = rowObject[col];
+
+						setValueForInput(input, rowObject[col]);
 					}
 				}
 			} else {
 				// Single setting
-
-				switch(element.type.toLowerCase()) {
-					default:
-						console.log(`Using default for settings element of type "${element.type}"`)
-						element.value = value;
-						break;
-
-					case "checkbox":
-						element.checked = value;
-						break;
-				}
+				setValueForInput(element, value);
 			}
 		}
 	});
+}
+
+function getValueForInput(element) {
+	switch(element.type.toLowerCase()) {
+		default:
+			return element.value;
+
+		case "checkbox":
+			return element.checked;
+	}
+
+	return undefined;
+}
+
+function setValueForInput(element, value) {
+	switch(element.type.toLowerCase()) {
+		default:
+			console.log(`Using default for settings element of type "${element.type}"`);
+			element.value = value;
+			break;
+
+		case "checkbox":
+			element.checked = value;
+			break;
+	}
 }
 
 function saveSettings() {
@@ -96,17 +112,7 @@ function saveSettings() {
 	let batch = {};
 
 	singleSettingElements.forEach(element => {
-		let val = undefined;
-
-		switch(element.type.toLowerCase()) {
-			default:
-				val = element.value;
-				break;
-
-			case "checkbox":
-				val = element.checked;
-				break;
-		}
+		let val = getValueForInput(element);
 
 		if (val !== undefined) {
 			batch[element.id] = val;
@@ -124,10 +130,12 @@ function saveSettings() {
 			let subkeys = row.querySelectorAll("[data-setting-id]");
 
 			for (let sk of subkeys) {
-				let id = sk.getAttribute("data-setting-id");
-				let value = sk.value;
+				let sk_id = sk.getAttribute("data-setting-id");
+				let sk_value = getValueForInput(sk);
 
-				item[id] = value;
+				if (sk_value !== undefined) {
+					item[sk_id] = sk_value;
+				}
 			}
 
 			val.push(item);
