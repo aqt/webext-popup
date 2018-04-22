@@ -133,8 +133,13 @@ function open_popup(settings) {
 			for (let d of domains) {
 				// Match subdomains as well
 				if (target.hostname.endsWith(d.trim())) {
-					data.width = row.width * 1;
-					data.height = row.height * 1;
+					if (row.width !== "") {
+						data.width = row.width * 1;
+					}
+
+					if (row.height !== "") {
+						data.height = row.height * 1;
+					}
 
 					break outer_loop;
 				}
