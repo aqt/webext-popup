@@ -118,7 +118,7 @@
 	},
 
 	"button_menu-item_restore": {
-		"message": "Restore to tab...",
+		"message": "Restore to this window...",
 		"description": "Item in button menu for restoring tab"
 	},
 
