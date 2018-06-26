@@ -3,15 +3,15 @@ let _addonSettings;
 browser.runtime.onInstalled.addListener(details => {
 	console.log("New install/update, creating default settings");
 
-	let DEFAULT_SETTINGS = Object.freeze({
+	let DEFAULT_SETTINGS = {
 		"menu-item_tab": true,
 		"menu-item_link": true,
 		"button-action": "MENU",
-	});
+	};
 
 	browser.storage.local.get().then(settings => {
-		Object.assign(settings, DEFAULT_SETTINGS);
-		browser.storage.local.set(settings);
+		Object.assign(DEFAULT_SETTINGS, settings);
+		browser.storage.local.set(DEFAULT_SETTINGS);
 	});
 });
 
