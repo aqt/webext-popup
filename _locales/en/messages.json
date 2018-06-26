@@ -20,6 +20,11 @@
 		"description": "Menu item for links"
 	},
 
+	"menu-item_bookmark_popup": {
+		"message": "Open as a popup",
+		"description": "Menu item for bookmarks"
+	},
+
 
 	"settings_title": {
 		"message": "Settings",
@@ -39,6 +44,11 @@
 	"settings_context-menus_links": {
 		"message": "Show on links",
 		"description": "Settings label for context menus on Links"
+	},
+
+	"settings_context-menus_bookmarks": {
+		"message": "Show on bookmarks",
+		"description": "Settings label for context menus on Bookmarks"
 	},
 
 	"settings_button": {

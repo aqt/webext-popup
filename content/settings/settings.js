@@ -96,7 +96,7 @@ function getValueForInput(element) {
 function setValueForInput(element, value) {
 	switch(element.type.toLowerCase()) {
 		default:
-			console.log(`Using default for settings element of type "${element.type}"`);
+			console.log(`Using default for settings element of type "${element.type}"`, element);
 			element.value = value;
 			break;
 

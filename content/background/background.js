@@ -6,6 +6,7 @@ browser.runtime.onInstalled.addListener(details => {
 	let DEFAULT_SETTINGS = {
 		"menu-item_tab": true,
 		"menu-item_link": true,
+		"menu-item_bookmark": true,
 		"button-action": "MENU",
 	};
 
@@ -29,6 +30,16 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 	switch(info.menuItemId) {
 		default:
 			console.warn("Unhandled menu item", info, tab);
+			break;
+		case "bookmark-popup":
+			browser.bookmarks.get(info.bookmarkId).then(arr => {
+				if (arr.length !== 1) {
+					console.error(`Unhandled number of bookmarks of id:${info.bookmarkId} !?`);
+					return;
+				}
+
+				open_popup({ "url": arr[0].url });
+			});
 			break;
 		case "link-popup":
 			open_popup({ "url": info.linkUrl });
@@ -179,6 +190,16 @@ function actOnSettings(settings) {
 		});
 	} else {
 		browser.contextMenus.remove("link-popup");
+	}
+
+	if (settings["menu-item_bookmark"]) {
+		browser.contextMenus.create({
+			id: "bookmark-popup",
+			title: browser.i18n.getMessage("menu-item_bookmark_popup"),
+			contexts: [ "bookmark" ],
+		});
+	} else {
+		browser.contextMenus.remove("bookmark-popup");
 	}
 }
 
