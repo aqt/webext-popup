@@ -204,8 +204,6 @@ function actOnSettings(settings) {
 			title: browser.i18n.getMessage("menu-item_tab_popup"),
 			contexts: [ "tab" ],
 		});
-	} else {
-		browser.contextMenus.remove("tab-popup");
 	}
 
 	if (settings["menu-item_link"]) {
@@ -214,8 +212,6 @@ function actOnSettings(settings) {
 			title: browser.i18n.getMessage("menu-item_link_popup"),
 			contexts: [ "link" ],
 		});
-	} else {
-		browser.contextMenus.remove("link-popup");
 	}
 
 	if (settings["menu-item_bookmark"]) {
@@ -224,8 +220,6 @@ function actOnSettings(settings) {
 			title: browser.i18n.getMessage("menu-item_bookmark_popup"),
 			contexts: [ "bookmark" ],
 		});
-	} else {
-		browser.contextMenus.remove("bookmark-popup");
 	}
 
 	if (settings["menu-item_page"]) {
