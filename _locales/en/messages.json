@@ -10,9 +10,9 @@
 	},
 
 
-	"menu-item_tab_popup": {
-		"message": "Move to a new popup",
-		"description": "Menu item for tabs"
+	"menu-item_bookmark_popup": {
+		"message": "Open as a popup",
+		"description": "Menu item for bookmarks"
 	},
 
 	"menu-item_link_popup": {
@@ -20,9 +20,19 @@
 		"description": "Menu item for links"
 	},
 
-	"menu-item_bookmark_popup": {
+	"menu-item_page_popup": {
 		"message": "Open as a popup",
-		"description": "Menu item for bookmarks"
+		"description": "Menu item for pages"
+	},
+
+	"menu-item_page_restore": {
+		"message": "Restore to window",
+		"description": "Menu item for pages"
+	},
+
+	"menu-item_tab_popup": {
+		"message": "Move to a new popup",
+		"description": "Menu item for tabs"
 	},
 
 
@@ -36,9 +46,9 @@
 		"description": "Settings section title for context menus"
 	},
 
-	"settings_context-menus_tabs": {
-		"message": "Show on tabs",
-		"description": "Settings label for context menus on Tabs"
+	"settings_context-menus_bookmarks": {
+		"message": "Show on bookmarks",
+		"description": "Settings label for context menus on Bookmarks"
 	},
 
 	"settings_context-menus_links": {
@@ -46,9 +56,14 @@
 		"description": "Settings label for context menus on Links"
 	},
 
-	"settings_context-menus_bookmarks": {
-		"message": "Show on bookmarks",
-		"description": "Settings label for context menus on Bookmarks"
+	"settings_context-menus_pages": {
+		"message": "Show on pages",
+		"description": "Settings label for context menus on Pages"
+	},
+
+	"settings_context-menus_tabs": {
+		"message": "Show on tabs",
+		"description": "Settings label for context menus on Tabs"
 	},
 
 	"settings_button": {

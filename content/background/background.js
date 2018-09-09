@@ -1,4 +1,5 @@
 let _addonSettings;
+let _dynamicMenuItems = [];
 
 browser.runtime.onInstalled.addListener(details => {
 	console.log("New install/update, creating default settings");
@@ -6,6 +7,7 @@ browser.runtime.onInstalled.addListener(details => {
 	let DEFAULT_SETTINGS = {
 		"menu-item_tab": true,
 		"menu-item_link": true,
+		"menu-item_page": true,
 		"menu-item_bookmark": true,
 		"button-action": "MENU",
 	};
@@ -27,7 +29,12 @@ browser.storage.onChanged.addListener((changes, area) => {
 });
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-	switch(info.menuItemId) {
+	if (info.parentMenuItemId === "page-restore") {
+		browser.windows.get(info.menuItemId*1).then(wnd => restoreTab(tab, wnd));
+		return;
+	}
+
+	switch (info.menuItemId) {
 		default:
 			console.warn("Unhandled menu item", info, tab);
 			break;
@@ -44,6 +51,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 		case "link-popup":
 			open_popup({ "url": info.linkUrl });
 			break;
+		case "page-popup":
 		case "tab-popup":
 			open_popup({ "tab": tab });
 			break;
@@ -62,7 +70,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 
 		case Notification.RESTORE_WINDOW:
-			restoreTab(message.tab);
+			browser.windows.getCurrent().then(wnd => restoreTab(message.tab, wnd));
 			break;
 
 		case Notification.CONVERT_EXISTING:
@@ -71,31 +79,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
-function restoreTab(tab) {
-	browser.windows.getCurrent().then(wnd => {
-		browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(
-			() => browser.windows.remove(tab.windowId),
-
-			e => {
-				console.log("Error moving tab", e);
-				console.log("Running workaround to check if error was sent erroneously");
-
-				browser.tabs.query({ windowId: tab.windowId }).then(tabs => {
-					// There should always be only one tab, but to cover all cases...
-					if (tabs.length === 0) {
-						browser.windows.remove(tab.windowId);
-					} else {
-						tabs.some(newTab => {
-							if (tab.id !== newTab.id) {
-								browser.windows.remove(tab.windowId);
-								return true;
-							}
-						});
-					}
-				});
-			}
-		);
-	});
+function restoreTab(tab, wnd) {
+	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 });
 }
 
 function open_popup(settings) {
@@ -165,6 +150,47 @@ function open_popup(settings) {
 	}
 }
 
+function modifyPageContextMenu(windowId) {
+	if (windowId == browser.windows.WINDOW_ID_NONE) {
+		return;
+	}
+
+	browser.windows.get(windowId).then(wnd => {
+		switch (wnd.type.toLowerCase()) {
+			case "normal":
+				browser.contextMenus.update("page-popup", { visible: true });
+				browser.contextMenus.update("page-restore", { visible: false });
+
+				break;
+			case "popup":
+				browser.contextMenus.update("page-popup", { visible: false });
+				browser.contextMenus.update("page-restore", { visible: true });
+
+				break;
+		}
+	});
+}
+
+function popuplateWindowList(info, tab) {
+	if (~info.menuIds.indexOf("page-restore")) {
+		_dynamicMenuItems.forEach(windowId => browser.contextMenus.remove(windowId));
+
+		_dynamicMenuItems = [];
+
+		browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => windows.forEach(w => {
+			_dynamicMenuItems.push(w.id + "");
+
+			browser.contextMenus.create({
+				id: w.id + "",
+				title: w.title,
+				parentId: "page-restore"
+			});
+
+			browser.contextMenus.refresh();
+		}));
+	}
+}
+
 function actOnSettings(settings) {
 	console.log("Acting on new settings");
 
@@ -200,6 +226,29 @@ function actOnSettings(settings) {
 		});
 	} else {
 		browser.contextMenus.remove("bookmark-popup");
+	}
+
+	if (settings["menu-item_page"]) {
+		browser.windows.onFocusChanged.addListener(modifyPageContextMenu);
+		browser.contextMenus.onShown.addListener(popuplateWindowList);
+
+		browser.contextMenus.create({
+			id: "page-popup",
+			title: browser.i18n.getMessage("menu-item_page_popup"),
+			contexts: [ "page" ],
+		});
+
+		browser.contextMenus.create({
+			id: "page-restore",
+			title: browser.i18n.getMessage("menu-item_page_restore"),
+			contexts: [ "page" ],
+		});
+
+		browser.contextMenus.update("page-popup", { visible: false });
+		browser.contextMenus.update("page-restore", { visible: false });
+	} else {
+		browser.windows.onFocusChanged.removeListener(modifyPageContextMenu);
+		browser.contextMenus.onShown.removeListener(popuplateWindowList);
 	}
 }
 
