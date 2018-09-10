@@ -55,6 +55,14 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 		case "tab-popup":
 			open_popup({ "tab": tab });
 			break;
+		case "page-restore":
+			// No `type` allowed in browser.windows.update, ugly workaround...
+			browser.windows.create().then(wnd =>
+				browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(newTab =>
+					browser.tabs.remove(wnd.tabs[0].id)
+				)
+			);
+			break;
 	}
 });
 
