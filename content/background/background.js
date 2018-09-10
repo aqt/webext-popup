@@ -56,12 +56,20 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 			open_popup({ "tab": tab });
 			break;
 		case "page-restore":
-			// No `type` allowed in browser.windows.update, ugly workaround...
-			browser.windows.create().then(wnd =>
-				browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(newTab =>
-					browser.tabs.remove(wnd.tabs[0].id)
-				)
-			);
+			// If firefox doesn't make changes, the only way to get here is if there is no submenu of windows
+			browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
+				if (windows.length > 0) {
+					restoreTab(tab, windows[0])
+				} else {
+					// No `type` allowed in browser.windows.update, ugly workaround...
+					browser.windows.create().then(wnd =>
+						browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(newTab =>
+							browser.tabs.remove(wnd.tabs[0].id)
+						)
+					);
+				}
+			});
+
 			break;
 	}
 });
@@ -194,17 +202,21 @@ function popuplateWindowList(info, tab) {
 
 		_dynamicMenuItems = [];
 
-		browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => windows.forEach(w => {
-			_dynamicMenuItems.push(w.id + "");
+		browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
+			if (windows.length > 1) {
+				windows.forEach(w => {
+					_dynamicMenuItems.push(w.id + "");
 
-			browser.contextMenus.create({
-				id: w.id + "",
-				title: w.title,
-				parentId: "page-restore"
-			});
+					browser.contextMenus.create({
+						id: w.id + "",
+						title: w.title,
+						parentId: "page-restore"
+					});
+				});
 
-			browser.contextMenus.refresh();
-		}));
+				browser.contextMenus.refresh();
+			}
+		});
 	}
 }
 
