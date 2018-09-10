@@ -52,8 +52,6 @@ function buildMenu() {
 				wnd => appendWindowItem(wnd, tab),
 				err => appendWindowItem(undefined, tab)
 			);
-			// 	,
-			// );
 		});
 	});
 }
