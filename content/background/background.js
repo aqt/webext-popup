@@ -167,19 +167,19 @@ function modifyPageContextMenu(windowId) {
 		switch (wnd.type.toLowerCase()) {
 			case "normal":
 				// Firefox versions before 63 does not support `visible`, and even rejects the entire update
-				browser.contextMenus.update("page-popup", { enabled: true }).then().catch(e =>
+				browser.contextMenus.update("page-popup", { enabled: true }).then(() =>
 					browser.contextMenus.update("page-popup", { visible: true })
 				);
-				browser.contextMenus.update("page-restore", { enabled: false }).then().catch(e =>
+				browser.contextMenus.update("page-restore", { enabled: false }).then(() =>
 					browser.contextMenus.update("page-restore", { visible: false })
 				);
 
 				break;
 			case "popup":
-				browser.contextMenus.update("page-popup", { enabled: false }).then().catch(e =>
+				browser.contextMenus.update("page-popup", { enabled: false }).then(() =>
 					browser.contextMenus.update("page-popup", { visible: false })
 				);
-				browser.contextMenus.update("page-restore", { enabled: true }).then().catch(e =>
+				browser.contextMenus.update("page-restore", { enabled: true }).then(() =>
 					browser.contextMenus.update("page-restore", { visible: true })
 				);
 
@@ -256,10 +256,10 @@ function actOnSettings(settings) {
 		});
 
 		// Firefox versions before 63 does not support `visible`, and even rejects the entire update
-		browser.contextMenus.update("page-popup", { enabled: false }).then().catch(e =>
+		browser.contextMenus.update("page-popup", { enabled: false }).then(() =>
 			browser.contextMenus.update("page-popup", { visible: false })
 		);
-		browser.contextMenus.update("page-restore", { enabled: false }).then().catch(e =>
+		browser.contextMenus.update("page-restore", { enabled: false }).then(() =>
 			browser.contextMenus.update("page-restore", { visible: false })
 		);
 	} else {
