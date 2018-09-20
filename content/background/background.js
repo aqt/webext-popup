@@ -95,6 +95,53 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+	if (!changeInfo.hasOwnProperty("url")) {
+		return;
+	}
+
+	browser.windows.get(tab.windowId).then(wnd => {
+		if (wnd.type === "popup") {
+			return;
+		}
+
+		if (_addonSettings.hasOwnProperty("popup-position")) {
+			let target = document.createElement("a");
+			target.setAttribute("href", changeInfo.url);
+
+			let shouldOpen = false;
+
+			outer_loop:
+			for (let row of _addonSettings["popup-position"]) {
+				if (!row.hasOwnProperty("autopopup") || !row.autopopup) {
+					continue;
+				}
+
+				let domains;
+
+				// User may want to add multiple domains
+				if (~row.domain.indexOf(",")) {
+					domains = row.domain.split(",");
+				} else {
+					domains = [ row.domain ];
+				}
+
+				for (let d of domains) {
+					// Match subdomains as well
+					if (target.hostname.endsWith(d.trim())) {
+						shouldOpen = true;
+						break outer_loop;
+					}
+				}
+			}
+
+			if (shouldOpen) {
+				open_popup({ "tab": tab });
+			}
+		}
+	});
+}, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+
 function restoreTab(tab, wnd) {
 	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 });
 }

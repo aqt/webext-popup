@@ -131,6 +131,11 @@
 		"description": "Settings header for popup position column"
 	},
 
+	"settings_popup-position_autopopup": {
+		"message": "Auto-Popup",
+		"description": "Settings header for popup position column"
+	},
+
 	"settings_popup-position_domain_description": {
 		"message": "Entries without a subdomain (e.g. www) also apply to all of its subdomains. Multiple domains can be used by separating the entries with a comma (,). Example value: github.com,www.google.com",
 		"description": "Settings description for popup position column"
