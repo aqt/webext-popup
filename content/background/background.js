@@ -95,7 +95,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+function handleUpdatedTap(tabId, changeInfo, tab) {
 	if (!changeInfo.hasOwnProperty("url")) {
 		return;
 	}
@@ -140,7 +140,14 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 			}
 		}
 	});
-}, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+}
+
+try {
+	browser.tabs.onUpdated.addListener(handleUpdatedTap, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+} catch (e) {
+	// Fallback due to second parameter added in version 61
+	browser.tabs.onUpdated.addListener(handleUpdatedTap);
+}
 
 function restoreTab(tab, wnd) {
 	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 });
