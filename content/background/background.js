@@ -95,7 +95,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
-function handleUpdatedTap(tabId, changeInfo, tab) {
+function handleUpdatedTab(tabId, changeInfo, tab) {
 	if (!changeInfo.hasOwnProperty("url")) {
 		return;
 	}
@@ -143,10 +143,10 @@ function handleUpdatedTap(tabId, changeInfo, tab) {
 }
 
 try {
-	browser.tabs.onUpdated.addListener(handleUpdatedTap, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+	browser.tabs.onUpdated.addListener(handleUpdatedTab, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
 } catch (e) {
 	// Fallback due to second parameter added in version 61
-	browser.tabs.onUpdated.addListener(handleUpdatedTap);
+	browser.tabs.onUpdated.addListener(handleUpdatedTab);
 }
 
 function restoreTab(tab, wnd) {
