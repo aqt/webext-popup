@@ -150,7 +150,16 @@ try {
 }
 
 function restoreTab(tab, wnd) {
-	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 });
+	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).catch(err => {
+		browser.tabs.get(tab.id).then(newTab => {
+			if (tab.windowId === newTab.windowId) {
+				console.error("Error restoring tab: ", err);
+			} else {
+				// Cleanup necessary until unknown firefox version before 62
+				browser.windows.remove(tab.windowId)
+			}
+		});
+	});
 }
 
 function open_popup(settings) {
