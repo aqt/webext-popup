@@ -100,6 +100,12 @@ function setValueForInput(element, value) {
 			element.value = value;
 			break;
 
+		case "number":
+		case "select-one":
+		case "text":
+			element.value = value;
+			break;
+
 		case "checkbox":
 			element.checked = value;
 			break;
