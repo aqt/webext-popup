@@ -111,6 +111,16 @@
 		"description": "Settings header for popup position column"
 	},
 
+	"settings_popup-position_default_x": {
+		"message": "Default X",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_default_y": {
+		"message": "Default Y",
+		"description": "Settings header for popup position column"
+	},
+
 	"settings_popup-position_default_width": {
 		"message": "Default width",
 		"description": "Settings header for popup position column"

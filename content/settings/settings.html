@@ -77,12 +77,20 @@
 
 				<table>
 					<thead>
+						<th data-i18n-message="settings_popup-position_default_x"></th>
+						<th data-i18n-message="settings_popup-position_default_y"></th>
 						<th data-i18n-message="settings_popup-position_default_width"></th>
 						<th data-i18n-message="settings_popup-position_default_height"></th>
 					</thead>
 
 					<tbody>
 						<tr>
+							<td>
+								<input id="popup-position_x_default" type="number" data-setting>
+							</td>
+							<td>
+								<input id="popup-position_y_default" type="number" data-setting>
+							</td>
 							<td>
 								<input id="popup-position_width_default" type="number" data-setting>
 							</td>
@@ -96,6 +104,8 @@
 				<table id="popup-position" data-setting-list>
 					<thead>
 						<th data-i18n-message="settings_popup-position_domain" data-i18n-title="settings_popup-position_domain_description"></th>
+						<th data-i18n-message="settings_popup-position_x"></th>
+						<th data-i18n-message="settings_popup-position_y"></th>
 						<th data-i18n-message="settings_popup-position_width"></th>
 						<th data-i18n-message="settings_popup-position_height"></th>
 						<th data-i18n-message="settings_popup-position_autopopup"></th>
@@ -105,6 +115,12 @@
 						<tr class="hidden" data-setting-list-item-template>
 							<td>
 								<input type="text" data-setting-id="domain">
+							</td>
+							<td>
+								<input type="number" data-setting-id="x">
+							</td>
+							<td>
+								<input type="number" data-setting-id="y">
 							</td>
 							<td>
 								<input type="number" data-setting-id="width">

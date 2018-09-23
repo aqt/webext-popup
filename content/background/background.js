@@ -5,6 +5,10 @@ browser.runtime.onInstalled.addListener(details => {
 	console.log("New install/update, creating default settings");
 
 	let DEFAULT_SETTINGS = {
+		"popup-position_x_default": "",
+		"popup-position_y_default": "",
+		"popup-position_width_default": "",
+		"popup-position_height_default": "",
 		"menu-item_tab": true,
 		"menu-item_link": true,
 		"menu-item_page": true,
@@ -165,8 +169,18 @@ function restoreTab(tab, wnd) {
 function open_popup(settings) {
 	let data = { "type": "popup" };
 
+	let x = _addonSettings["popup-position_x_default"];
+	let y = _addonSettings["popup-position_y_default"];
 	let w = _addonSettings["popup-position_width_default"];
 	let h = _addonSettings["popup-position_height_default"];
+
+	if (x !== "") {
+		data.left = x * 1;
+	}
+
+	if (y !== "") {
+		data.top = y * 1;
+	}
 
 	if (w) {
 		data.width = w * 1;
@@ -208,6 +222,14 @@ function open_popup(settings) {
 			for (let d of domains) {
 				// Match subdomains as well
 				if (target.hostname.endsWith(d.trim())) {
+					if (typeof row.x !== "undefined" && row.x !== "") {
+						data.left = row.x * 1;
+					}
+
+					if (typeof row.y !== "undefined" && row.y !== "") {
+						data.top = row.y * 1;
+					}
+
 					if (row.width !== "") {
 						data.width = row.width * 1;
 					}
@@ -223,7 +245,14 @@ function open_popup(settings) {
 	}
 
 	try {
-		browser.windows.create(data);
+		browser.windows.create(data).then(wnd => {
+			if (data.left === wnd.left && data.top === wnd.top) {
+				return;
+			}
+
+			// left/top not acted on in create data...
+			browser.windows.update(wnd.id, { "left": data.left, "top": data.top });
+		});
 	} catch(e) {
 		console.error("Cannot open popup", e);
 	}
