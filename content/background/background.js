@@ -1,103 +1,125 @@
 let _addonSettings;
 let _dynamicMenuItems = [];
 
-browser.runtime.onInstalled.addListener(details => {
-	console.log("New install/update, creating default settings");
-
-	let DEFAULT_SETTINGS = {
-		"popup-position_x_default": "",
-		"popup-position_y_default": "",
-		"popup-position_width_default": "",
-		"popup-position_height_default": "",
-		"menu-item_tab": true,
-		"menu-item_link": true,
-		"menu-item_page": true,
-		"menu-item_bookmark": true,
-		"button-action": "MENU",
-	};
-
-	browser.storage.local.get().then(settings => {
-		Object.assign(DEFAULT_SETTINGS, settings);
-		browser.storage.local.set(DEFAULT_SETTINGS);
-	});
-});
-
-browser.storage.onChanged.addListener((changes, area) => {
-	let settings = {};
-
-	for (key in changes) {
-		settings[key] = changes[key].newValue;
-	}
-
-	actOnSettings(settings);
-});
-
-browser.contextMenus.onClicked.addListener((info, tab) => {
-	if (info.parentMenuItemId === "page-restore") {
-		browser.windows.get(info.menuItemId*1).then(wnd => restoreTab(tab, wnd));
-		return;
-	}
-
-	switch (info.menuItemId) {
-		default:
-			console.warn("Unhandled menu item", info, tab);
-			break;
-		case "bookmark-popup":
-			browser.bookmarks.get(info.bookmarkId).then(arr => {
-				if (arr.length !== 1) {
-					console.error(`Unhandled number of bookmarks of id:${info.bookmarkId} !?`);
-					return;
-				}
-
-				open_popup({ "url": arr[0].url });
-			});
-			break;
-		case "link-popup":
-			open_popup({ "url": info.linkUrl });
-			break;
-		case "page-popup":
-		case "tab-popup":
-			open_popup({ "tab": tab });
-			break;
-		case "page-restore":
-			// If firefox doesn't make changes, the only way to get here is if there is no submenu of windows
-			browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
-				if (windows.length > 0) {
-					restoreTab(tab, windows[0])
-				} else {
-					// No `type` allowed in browser.windows.update, ugly workaround...
-					browser.windows.create().then(wnd =>
-						browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(newTab =>
-							browser.tabs.remove(wnd.tabs[0].id)
-						)
-					);
-				}
-			});
-
-			break;
-	}
-});
-
 let Notification = Object.freeze({
 	RESTORE_WINDOW: "RESTORE_WINDOW",
 	CONVERT_EXISTING: "CONVERT_EXISTING",
 });
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	switch(message.type) {
-		default:
-			console.warn("Unhandled message!", message);
-			break;
+function main() {
+	// Apply current settings
+	browser.storage.local.get().then(settings => actOnSettings(settings));
 
-		case Notification.RESTORE_WINDOW:
-			browser.windows.getCurrent().then(wnd => restoreTab(message.tab, wnd));
-			break;
+	addListeners();
+}
 
-		case Notification.CONVERT_EXISTING:
-			open_popup({ "tab": message.tab });
-			break;
+function addListeners() {
+	// Set default settings and (eventually) handle migration for new versions
+	browser.runtime.onInstalled.addListener(details => {
+		console.log("New install/update, creating default settings");
+
+		let DEFAULT_SETTINGS = {
+			"popup-position_x_default": "",
+			"popup-position_y_default": "",
+			"popup-position_width_default": "",
+			"popup-position_height_default": "",
+			"menu-item_tab": true,
+			"menu-item_link": true,
+			"menu-item_page": true,
+			"menu-item_bookmark": true,
+			"button-action": "MENU",
+		};
+
+		browser.storage.local.get().then(settings => {
+			Object.assign(DEFAULT_SETTINGS, settings);
+			browser.storage.local.set(DEFAULT_SETTINGS);
+		});
+	});
+
+	// Apply settings after changes
+	browser.storage.onChanged.addListener((changes, area) => {
+		let settings = {};
+
+		for (key in changes) {
+			settings[key] = changes[key].newValue;
+		}
+
+		actOnSettings(settings);
+	});
+
+	// Handle context menu items
+	browser.contextMenus.onClicked.addListener((info, tab) => {
+		if (info.parentMenuItemId === "page-restore") {
+			browser.windows.get(info.menuItemId*1).then(wnd => restoreTab(tab, wnd));
+			return;
+		}
+
+		switch (info.menuItemId) {
+			default:
+				console.warn("Unhandled menu item", info, tab);
+				break;
+			case "bookmark-popup":
+				browser.bookmarks.get(info.bookmarkId).then(arr => {
+					if (arr.length !== 1) {
+						console.error(`Unhandled number of bookmarks of id:${info.bookmarkId} !?`);
+						return;
+					}
+
+					open_popup({ "url": arr[0].url });
+				});
+				break;
+			case "link-popup":
+				open_popup({ "url": info.linkUrl });
+				break;
+			case "page-popup":
+			case "tab-popup":
+				open_popup({ "tab": tab });
+				break;
+			case "page-restore":
+				// If firefox doesn't make changes, the only way to get here is if there is no submenu of windows
+				browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
+					if (windows.length > 0) {
+						restoreTab(tab, windows[0])
+					} else {
+						// No `type` allowed in browser.windows.update, ugly workaround...
+						browser.windows.create().then(wnd =>
+							browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).then(newTab =>
+								browser.tabs.remove(wnd.tabs[0].id)
+							)
+						);
+					}
+				});
+
+				break;
+		}
+	});
+
+	// Receive messages from other scripts
+	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+		switch(message.type) {
+			default:
+				console.warn("Unhandled message!", message);
+				break;
+
+			case Notification.RESTORE_WINDOW:
+				browser.windows.getCurrent().then(wnd => restoreTab(message.tab, wnd));
+				break;
+
+			case Notification.CONVERT_EXISTING:
+				open_popup({ "tab": message.tab });
+				break;
+		}
+	});
+
+
+	// Listen for tab url changes
+	try {
+		browser.tabs.onUpdated.addListener(handleUpdatedTab, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+	} catch (e) {
+		// Fallback due to second parameter added in version 61
+		browser.tabs.onUpdated.addListener(handleUpdatedTab);
 	}
-});
+}
 
 function handleUpdatedTab(tabId, changeInfo, tab) {
 	if (!changeInfo.hasOwnProperty("url")) {
@@ -144,13 +166,6 @@ function handleUpdatedTab(tabId, changeInfo, tab) {
 			}
 		}
 	});
-}
-
-try {
-	browser.tabs.onUpdated.addListener(handleUpdatedTab, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
-} catch (e) {
-	// Fallback due to second parameter added in version 61
-	browser.tabs.onUpdated.addListener(handleUpdatedTab);
 }
 
 function restoreTab(tab, wnd) {
@@ -372,4 +387,4 @@ function actOnSettings(settings) {
 	}
 }
 
-browser.storage.local.get().then(settings => actOnSettings(settings));
+main();
