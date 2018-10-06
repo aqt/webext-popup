@@ -1,9 +1,14 @@
 let _addonSettings;
 let _dynamicMenuItems = [];
 
-let Notification = Object.freeze({
+const Notification = Object.freeze({
 	RESTORE_WINDOW: "RESTORE_WINDOW",
 	CONVERT_EXISTING: "CONVERT_EXISTING",
+});
+
+const WindowType = Object.freeze({
+	NORMAL: "normal",
+	POPUP: "popup"
 });
 
 function main() {
@@ -77,7 +82,7 @@ function addListeners() {
 				break;
 			case "page-restore":
 				// If firefox doesn't make changes, the only way to get here is if there is no submenu of windows
-				browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
+				browser.windows.getAll({ windowTypes: [ WindowType.NORMAL ] }).then(windows => {
 					if (windows.length > 0) {
 						restoreTab(tab, windows[0])
 					} else {
@@ -127,7 +132,7 @@ function handleUpdatedTab(tabId, changeInfo, tab) {
 	}
 
 	browser.windows.get(tab.windowId).then(wnd => {
-		if (wnd.type === "popup") {
+		if (wnd.type === WindowType.POPUP) {
 			return;
 		}
 
@@ -182,7 +187,7 @@ function restoreTab(tab, wnd) {
 }
 
 function open_popup(settings) {
-	let data = { "type": "popup" };
+	let data = { "type": WindowType.POPUP };
 
 	let x = _addonSettings["popup-position_x_default"];
 	let y = _addonSettings["popup-position_y_default"];
@@ -280,7 +285,7 @@ function modifyPageContextMenu(windowId) {
 
 	browser.windows.get(windowId).then(wnd => {
 		switch (wnd.type.toLowerCase()) {
-			case "normal":
+			case WindowType.NORMAL:
 				// Firefox versions before 63 does not support `visible`, and even rejects the entire update
 				browser.contextMenus.update("page-popup", { enabled: true }).then(() =>
 					browser.contextMenus.update("page-popup", { visible: true })
@@ -290,7 +295,7 @@ function modifyPageContextMenu(windowId) {
 				);
 
 				break;
-			case "popup":
+			case WindowType.POPUP:
 				browser.contextMenus.update("page-popup", { enabled: false }).then(() =>
 					browser.contextMenus.update("page-popup", { visible: false })
 				);
@@ -309,7 +314,7 @@ function popuplateWindowList(info, tab) {
 
 		_dynamicMenuItems = [];
 
-		browser.windows.getAll({ windowTypes: ["normal"] }).then(windows => {
+		browser.windows.getAll({ windowTypes: [ WindowType.NORMAL ] }).then(windows => {
 			if (windows.length > 1) {
 				windows.forEach(w => {
 					_dynamicMenuItems.push(w.id + "");
