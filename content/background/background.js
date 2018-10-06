@@ -2,13 +2,33 @@ let _addonSettings;
 let _dynamicMenuItems = [];
 
 const Notification = Object.freeze({
-	RESTORE_WINDOW: "RESTORE_WINDOW",
 	CONVERT_EXISTING: "CONVERT_EXISTING",
+	RESTORE_WINDOW: "RESTORE_WINDOW",
 });
 
 const WindowType = Object.freeze({
 	NORMAL: "normal",
 	POPUP: "popup"
+});
+
+const ContextMenuItem = Object.freeze({
+	BOOKMARK_POPUP: "bookmark-popup",
+	LINK_POPUP: "link-popup",
+	PAGE_POPUP: "page-popup",
+	PAGE_RESTORE: "Page-restore",
+	TAB_POPUP: "tab-popup",
+});
+
+const SettingsKey = Object.freeze({
+	BUTTON_ACTION: "button-action",
+	MENU_ITEM_BOOKMARK: "menu-item_bookmark",
+	MENU_ITEM_LINK: "menu-item_link",
+	MENU_ITEM_PAGE: "menu-item_page",
+	MENU_ITEM_TAB: "menu-item_tab",
+	POPUP_POSITION_HEIGHT_DEFAULT: "popup-position_height_default",
+	POPUP_POSITION_WIDTH_DEFAULT: "popup-position_width_default",
+	POPUP_POSITION_X_DEFAULT: "popup-position_x_default",
+	POPUP_POSITION_Y_DEFAULT: "popup-position_y_default",
 });
 
 function main() {
@@ -23,17 +43,17 @@ function addListeners() {
 	browser.runtime.onInstalled.addListener(details => {
 		console.log("New install/update, creating default settings");
 
-		let DEFAULT_SETTINGS = {
-			"popup-position_x_default": "",
-			"popup-position_y_default": "",
-			"popup-position_width_default": "",
-			"popup-position_height_default": "",
-			"menu-item_tab": true,
-			"menu-item_link": true,
-			"menu-item_page": true,
-			"menu-item_bookmark": true,
-			"button-action": "MENU",
-		};
+		let DEFAULT_SETTINGS = {};
+
+		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_X_DEFAULT] = "";
+		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_Y_DEFAULT] = "";
+		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT] = "";
+		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT] = "";
+		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_TAB] = true;
+		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_LINK] = true;
+		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_PAGE] = true;
+		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_BOOKMARK] = true;
+		DEFAULT_SETTINGS[SettingsKey.BUTTON_ACTION] = "MENU";
 
 		browser.storage.local.get().then(settings => {
 			Object.assign(DEFAULT_SETTINGS, settings);
@@ -54,7 +74,7 @@ function addListeners() {
 
 	// Handle context menu items
 	browser.contextMenus.onClicked.addListener((info, tab) => {
-		if (info.parentMenuItemId === "page-restore") {
+		if (info.parentMenuItemId === ContextMenuItem.PAGE_RESTORE) {
 			browser.windows.get(info.menuItemId*1).then(wnd => restoreTab(tab, wnd));
 			return;
 		}
@@ -63,7 +83,7 @@ function addListeners() {
 			default:
 				console.warn("Unhandled menu item", info, tab);
 				break;
-			case "bookmark-popup":
+			case ContextMenuItem.BOOKMARK_POPUP:
 				browser.bookmarks.get(info.bookmarkId).then(arr => {
 					if (arr.length !== 1) {
 						console.error(`Unhandled number of bookmarks of id:${info.bookmarkId} !?`);
@@ -73,14 +93,14 @@ function addListeners() {
 					open_popup({ "url": arr[0].url });
 				});
 				break;
-			case "link-popup":
+			case ContextMenuItem.LINK_POPUP:
 				open_popup({ "url": info.linkUrl });
 				break;
-			case "page-popup":
-			case "tab-popup":
+			case ContextMenuItem.PAGE_POPUP:
+			case ContextMenuItem.TAB_POPUP:
 				open_popup({ "tab": tab });
 				break;
-			case "page-restore":
+			case ContextMenuItem.PAGE_RESTORE:
 				// If firefox doesn't make changes, the only way to get here is if there is no submenu of windows
 				browser.windows.getAll({ windowTypes: [ WindowType.NORMAL ] }).then(windows => {
 					if (windows.length > 0) {
@@ -189,10 +209,10 @@ function restoreTab(tab, wnd) {
 function open_popup(settings) {
 	let data = { "type": WindowType.POPUP };
 
-	let x = _addonSettings["popup-position_x_default"];
-	let y = _addonSettings["popup-position_y_default"];
-	let w = _addonSettings["popup-position_width_default"];
-	let h = _addonSettings["popup-position_height_default"];
+	let x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
+	let y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
+	let w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
+	let h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
 
 	if (x !== "") {
 		data.left = x * 1;
@@ -287,20 +307,20 @@ function modifyPageContextMenu(windowId) {
 		switch (wnd.type.toLowerCase()) {
 			case WindowType.NORMAL:
 				// Firefox versions before 63 does not support `visible`, and even rejects the entire update
-				browser.contextMenus.update("page-popup", { enabled: true }).then(() =>
-					browser.contextMenus.update("page-popup", { visible: true })
+				browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { enabled: true }).then(() =>
+					browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { visible: true })
 				);
-				browser.contextMenus.update("page-restore", { enabled: false }).then(() =>
-					browser.contextMenus.update("page-restore", { visible: false })
+				browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { enabled: false }).then(() =>
+					browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { visible: false })
 				);
 
 				break;
 			case WindowType.POPUP:
-				browser.contextMenus.update("page-popup", { enabled: false }).then(() =>
-					browser.contextMenus.update("page-popup", { visible: false })
+				browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { enabled: false }).then(() =>
+					browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { visible: false })
 				);
-				browser.contextMenus.update("page-restore", { enabled: true }).then(() =>
-					browser.contextMenus.update("page-restore", { visible: true })
+				browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { enabled: true }).then(() =>
+					browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { visible: true })
 				);
 
 				break;
@@ -309,7 +329,7 @@ function modifyPageContextMenu(windowId) {
 }
 
 function popuplateWindowList(info, tab) {
-	if (~info.menuIds.indexOf("page-restore")) {
+	if (~info.menuIds.indexOf(ContextMenuItem.PAGE_RESTORE)) {
 		_dynamicMenuItems.forEach(windowId => browser.contextMenus.remove(windowId));
 
 		_dynamicMenuItems = [];
@@ -322,7 +342,7 @@ function popuplateWindowList(info, tab) {
 					browser.contextMenus.create({
 						id: w.id + "",
 						title: w.title,
-						parentId: "page-restore"
+						parentId: ContextMenuType.PAGE_RESTORE
 					});
 				});
 
@@ -339,52 +359,52 @@ function actOnSettings(settings) {
 
 	browser.contextMenus.removeAll();
 
-	if (settings["menu-item_tab"]) {
+	if (settings[SettingsKey.MENU_ITEM_TAB]) {
 		browser.contextMenus.create({
-			id: "tab-popup",
+			id: ContextMenuType.TAB_POPUP,
 			title: browser.i18n.getMessage("menu-item_tab_popup"),
 			contexts: [ "tab" ],
 		});
 	}
 
-	if (settings["menu-item_link"]) {
+	if (settings[SettingsKey.MENU_ITEM_LINK]) {
 		browser.contextMenus.create({
-			id: "link-popup",
+			id: ContextMenuType.LINK_POPUP,
 			title: browser.i18n.getMessage("menu-item_link_popup"),
 			contexts: [ "link" ],
 		});
 	}
 
-	if (settings["menu-item_bookmark"]) {
+	if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
 		browser.contextMenus.create({
-			id: "bookmark-popup",
+			id: ContextMenuType.BOOKMARK_POPUP,
 			title: browser.i18n.getMessage("menu-item_bookmark_popup"),
 			contexts: [ "bookmark" ],
 		});
 	}
 
-	if (settings["menu-item_page"]) {
+	if (settings[SettingsKey.MENU_ITEM_PAGE]) {
 		browser.windows.onFocusChanged.addListener(modifyPageContextMenu);
 		browser.contextMenus.onShown.addListener(popuplateWindowList);
 
 		browser.contextMenus.create({
-			id: "page-popup",
+			id: ContextMenuType.PAGE_POPUP,
 			title: browser.i18n.getMessage("menu-item_page_popup"),
 			contexts: [ "page" ],
 		});
 
 		browser.contextMenus.create({
-			id: "page-restore",
+			id: ContextMenuType.PAGE_RESTORE,
 			title: browser.i18n.getMessage("menu-item_page_restore"),
 			contexts: [ "page" ],
 		});
 
 		// Firefox versions before 63 does not support `visible`, and even rejects the entire update
-		browser.contextMenus.update("page-popup", { enabled: false }).then(() =>
-			browser.contextMenus.update("page-popup", { visible: false })
+		browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { enabled: false }).then(() =>
+			browser.contextMenus.update(ContextMenuItem.PAGE_POPUP, { visible: false })
 		);
-		browser.contextMenus.update("page-restore", { enabled: false }).then(() =>
-			browser.contextMenus.update("page-restore", { visible: false })
+		browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { enabled: false }).then(() =>
+			browser.contextMenus.update(ContextMenuItem.PAGE_RESTORE, { visible: false })
 		);
 	} else {
 		browser.windows.onFocusChanged.removeListener(modifyPageContextMenu);
