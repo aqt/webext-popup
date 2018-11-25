@@ -43,21 +43,20 @@ function addListeners() {
 	browser.runtime.onInstalled.addListener(details => {
 		console.log("New install/update, creating default settings");
 
-		let DEFAULT_SETTINGS = {};
-
-		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_X_DEFAULT] = "";
-		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_Y_DEFAULT] = "";
-		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT] = "";
-		DEFAULT_SETTINGS[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT] = "";
-		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_TAB] = true;
-		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_LINK] = true;
-		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_PAGE] = true;
-		DEFAULT_SETTINGS[SettingsKey.MENU_ITEM_BOOKMARK] = true;
-		DEFAULT_SETTINGS[SettingsKey.BUTTON_ACTION] = "MENU";
-
 		browser.storage.local.get().then(settings => {
-			Object.assign(DEFAULT_SETTINGS, settings);
-			browser.storage.local.set(DEFAULT_SETTINGS);
+			let version;
+
+			if (details.reason === "install") {
+				version = "new";
+			} else {
+				if (settings.hasOwnProperty("version")) {
+					version = settings["version"];
+				} else {
+					version = "none";
+				}
+			}
+
+			migrateSettings(settings, version);
 		});
 	});
 
@@ -144,6 +143,35 @@ function addListeners() {
 		// Fallback due to second parameter added in version 61
 		browser.tabs.onUpdated.addListener(handleUpdatedTab);
 	}
+}
+
+function migrateSettings(settings, version) {
+	console.log("Settings migration, from version:"+ version);
+
+	switch (version) {
+		default: return;
+
+		case "new":
+			// New install, only generate defaults
+			settings[SettingsKey.POPUP_POSITION_X_DEFAULT] = "";
+			settings[SettingsKey.POPUP_POSITION_Y_DEFAULT] = "";
+			settings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT] = "";
+			settings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT] = "";
+			settings[SettingsKey.MENU_ITEM_TAB] = true;
+			settings[SettingsKey.MENU_ITEM_LINK] = true;
+			settings[SettingsKey.MENU_ITEM_PAGE] = true;
+			settings[SettingsKey.MENU_ITEM_BOOKMARK] = true;
+			settings[SettingsKey.BUTTON_ACTION] = "MENU";
+			break;
+
+		// INTENTIONAL FALLTHROUGH
+		// case "none":
+			// Update from old version prior to settings migration system, "version 1"
+		// case "2":
+		// case "3":
+	}
+
+	browser.storage.local.set(settings);
 }
 
 function handleUpdatedTab(tabId, changeInfo, tab) {

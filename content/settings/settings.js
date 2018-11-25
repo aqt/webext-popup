@@ -53,6 +53,10 @@ function loadSettings() {
 
 	browser.storage.local.get().then(result => {
 		for (key in result) {
+			if (key === "version") {
+				continue;
+			}
+
 			let value = result[key];
 			let element = document.querySelector(`#${key}`);
 
