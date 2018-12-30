@@ -87,18 +87,28 @@
 	},
 
 	"settings_popup-position": {
-		"message": "Popup position",
+		"message": "Popup rules",
 		"description": "Settings label for popup position"
 	},
 
 	"settings_popup-position_description": {
-		"message": "Leave fields empty for default values",
+		"message": "If several rules are matching, only the first applies. Default values only apply if no rule is matching.",
 		"description": "Settings description for popup position"
 	},
 
-	"settings_popup-position_domain": {
-		"message": "Domain ?",
-		"description": "Settings header for popup position column"
+	"settings_popup-position_type": {
+		"message": "Applies to",
+		"description": "Settings header for applies-type"
+	},
+
+	"settings_popup-position_type_domain": {
+		"message": "Domain",
+		"description": "Settings value for applies-type domain"
+	},
+
+	"settings_popup-position_type_url": {
+		"message": "URL",
+		"description": "Settings value for applies-type URL"
 	},
 
 	"settings_popup-position_x": {

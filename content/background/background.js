@@ -165,11 +165,25 @@ function migrateSettings(settings, version) {
 			break;
 
 		// INTENTIONAL FALLTHROUGH
-		// case "none":
+		case "none":
 			// Update from old version prior to settings migration system, "version 1"
+			if (settings.hasOwnProperty("popup-position")) {
+				settings["popup-position"].map(rule => {
+					rule["appliestype"] = "DOMAIN"
+					rule["search"] = rule["domain"].split(",").map(d => d+",*."+d).join(",");
+					delete rule["domain"];
+				});
+
+				settings["rules"] = settings["popup-position"];
+				delete settings["popup-position"];
+
+				browser.storage.local.remove("popup-position");
+			}
 		// case "2":
 		// case "3":
 	}
+
+	settings["version"] = "2";
 
 	browser.storage.local.set(settings);
 }
@@ -184,39 +198,10 @@ function handleUpdatedTab(tabId, changeInfo, tab) {
 			return;
 		}
 
-		if (_addonSettings.hasOwnProperty("popup-position")) {
-			let target = document.createElement("a");
-			target.setAttribute("href", changeInfo.url);
+		let rule = getMatchingRule(changeInfo.url);
 
-			let shouldOpen = false;
-
-			outer_loop:
-			for (let row of _addonSettings["popup-position"]) {
-				if (!row.hasOwnProperty("autopopup") || !row.autopopup) {
-					continue;
-				}
-
-				let domains;
-
-				// User may want to add multiple domains
-				if (~row.domain.indexOf(",")) {
-					domains = row.domain.split(",");
-				} else {
-					domains = [ row.domain ];
-				}
-
-				for (let d of domains) {
-					// Match subdomains as well
-					if (target.hostname.endsWith(d.trim())) {
-						shouldOpen = true;
-						break outer_loop;
-					}
-				}
-			}
-
-			if (shouldOpen) {
-				open_popup({ "tab": tab });
-			}
+		if (rule && rule["autopopup"]) {
+			open_popup({ "tab": tab }, rule);
 		}
 	});
 }
@@ -234,29 +219,8 @@ function restoreTab(tab, wnd) {
 	});
 }
 
-function open_popup(settings) {
+function open_popup(settings, rule) {
 	let data = { "type": WindowType.POPUP };
-
-	let x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
-	let y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
-	let w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
-	let h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
-
-	if (x !== "") {
-		data.left = x * 1;
-	}
-
-	if (y !== "") {
-		data.top = y * 1;
-	}
-
-	if (w) {
-		data.width = w * 1;
-	}
-
-	if (h) {
-		data.height = h * 1;
-	}
 
 	let url = "";
 
@@ -271,45 +235,38 @@ function open_popup(settings) {
 		return;
 	}
 
-	// Set data arguments from settings
-	if (_addonSettings.hasOwnProperty("popup-position")) {
-		let target = document.createElement("a");
-		target.setAttribute("href", url);
+	if (typeof rule === "undefined") {
+		rule = getMatchingRule(url);
+	}
 
-		outer_loop:
-		for (let row of _addonSettings["popup-position"]) {
-			let domains;
+	let x, y, w, h;
 
-			// User may want to add multiple domains
-			if (~row.domain.indexOf(",")) {
-				domains = row.domain.split(",");
-			} else {
-				domains = [ row.domain ];
-			}
+	if (rule) {
+		x = rule.x;
+		y = rule.y;
+		w = rule.width;
+		h = rule.height;
+	} else {
+		x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
+		y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
+		w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
+		h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
+	}
 
-			for (let d of domains) {
-				// Match subdomains as well
-				if (target.hostname.endsWith(d.trim())) {
-					if (typeof row.x !== "undefined" && row.x !== "") {
-						data.left = row.x * 1;
-					}
+	if (x !== "") {
+		data.left = x * 1;
+	}
 
-					if (typeof row.y !== "undefined" && row.y !== "") {
-						data.top = row.y * 1;
-					}
+	if (y !== "") {
+		data.top = y * 1;
+	}
 
-					if (row.width !== "") {
-						data.width = row.width * 1;
-					}
+	if (w !== "") {
+		data.width = w * 1;
+	}
 
-					if (row.height !== "") {
-						data.height = row.height * 1;
-					}
-
-					break outer_loop;
-				}
-			}
-		}
+	if (h !== "") {
+		data.height = h * 1;
 	}
 
 	try {
@@ -378,6 +335,53 @@ function popuplateWindowList(info, tab) {
 			}
 		});
 	}
+}
+
+function escapeForRegex(str) {
+	let wildcardReplacement = "\u0006\u0015\u0000";
+	let wildcardRegex = new RegExp(wildcardReplacement, "g")
+
+	str = str.replace(/\*/g, wildcardReplacement);
+	str = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+	str = "^" + str.replace(wildcardRegex, ".*") + "$";
+
+	return str;
+}
+
+function getMatchingRule(url) {
+	let a = document.createElement("a");
+	a.setAttribute("href", url);
+
+	for (let rule of _addonSettings["rules"]) {
+		let regex;
+
+		if (rule["search"].charAt(0) === "/") {
+			let tmpSearch = rule["search"].substr(1);
+			let idx = tmpSearch.lastIndexOf("/");
+
+			if (!~idx) {
+				continue;
+			}
+
+			let flags = tmpSearch.slice(idx + 1);
+
+			regex = new RegExp(tmpSearch.slice(0, idx), flags);
+		} else {
+			regex = escapeForRegex(rule["search"]);
+		}
+
+		if (rule["appliestype"] === "DOMAIN") {
+			if (~a.hostname.search(regex)) {
+				return rule;
+			}
+		} else {
+			if (~url.search(regex)) {
+				return rule;
+			}
+		}
+	}
+
+	return undefined;
 }
 
 function actOnSettings(settings) {

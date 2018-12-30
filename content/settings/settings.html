@@ -101,9 +101,10 @@
 					</tbody>
 				</table>
 
-				<table id="popup-position" data-setting-list>
+				<table id="rules" data-setting-list>
 					<thead>
-						<th data-i18n-message="settings_popup-position_domain" data-i18n-title="settings_popup-position_domain_description"></th>
+						<th data-i18n-message="settings_popup-position_type"></th>
+						<th></th>
 						<th data-i18n-message="settings_popup-position_x"></th>
 						<th data-i18n-message="settings_popup-position_y"></th>
 						<th data-i18n-message="settings_popup-position_width"></th>
@@ -114,7 +115,14 @@
 					<tbody>
 						<tr class="hidden" data-setting-list-item-template>
 							<td>
-								<input type="text" data-setting-id="domain">
+								<select data-setting-id="appliestype">
+									<option value="DOMAIN" data-i18n-message="settings_popup-position_type_domain"></option>
+									<option value="URL" data-i18n-message="settings_popup-position_type_url"></option>
+								</select>
+							</td>
+
+							<td>
+								<input type="text" data-setting-id="search">
 							</td>
 							<td>
 								<input type="number" data-setting-id="x">
