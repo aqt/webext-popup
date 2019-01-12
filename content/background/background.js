@@ -344,6 +344,7 @@ function escapeForRegex(str) {
 	str = str.replace(/\*/g, wildcardReplacement);
 	str = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 	str = "^" + str.replace(wildcardRegex, ".*") + "$";
+	str = str.replace(/,/g, "|");
 
 	return str;
 }
