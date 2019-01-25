@@ -207,7 +207,7 @@ function handleUpdatedTab(tabId, changeInfo, tab) {
 }
 
 function restoreTab(tab, wnd) {
-	browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).catch(err => {
+	function cleanup(err, w, t) {
 		browser.tabs.get(tab.id).then(newTab => {
 			if (tab.windowId === newTab.windowId) {
 				console.error("Error restoring tab: ", err);
@@ -216,7 +216,13 @@ function restoreTab(tab, wnd) {
 				browser.windows.remove(tab.windowId)
 			}
 		});
-	});
+	}
+
+	if (tab.windowId === wnd.id) {
+		browser.windows.create({ tabId: tab.id }).then(() => cleanup(undefined, wnd, tab)).catch(err => cleanup(err, wnd, tab));
+	} else {
+		browser.tabs.move(tab.id, { windowId: wnd.id, index: -1 }).catch(err => cleanup(err, wnd, tab));
+	}
 }
 
 function open_popup(settings, rule) {
