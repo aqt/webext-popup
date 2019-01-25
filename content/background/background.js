@@ -426,7 +426,10 @@ function actOnSettings(settings) {
 
 	if (settings[SettingsKey.MENU_ITEM_PAGE]) {
 		browser.windows.onFocusChanged.addListener(modifyPageContextMenu);
-		browser.contextMenus.onShown.addListener(popuplateWindowList);
+
+		if (browser.contextMenus.hasOwnProperty("onShown")) {
+			browser.contextMenus.onShown.addListener(popuplateWindowList);
+		}
 
 		browser.contextMenus.create({
 			id: ContextMenuType.PAGE_POPUP,
@@ -449,7 +452,10 @@ function actOnSettings(settings) {
 		);
 	} else {
 		browser.windows.onFocusChanged.removeListener(modifyPageContextMenu);
-		browser.contextMenus.onShown.removeListener(popuplateWindowList);
+
+		if (browser.contextMenus.hasOwnProperty("onShown")) {
+			browser.contextMenus.onShown.removeListener(popuplateWindowList);
+		}
 	}
 }
 
