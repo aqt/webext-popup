@@ -146,8 +146,6 @@ function addListeners() {
 }
 
 function migrateSettings(settings, version) {
-	console.log("Settings migration, from version:"+ version);
-
 	switch (version) {
 		default: return;
 
@@ -182,6 +180,8 @@ function migrateSettings(settings, version) {
 		// case "2":
 		// case "3":
 	}
+
+	console.log("Settings migration, from version:"+ version);
 
 	settings["version"] = "2";
 
