@@ -412,12 +412,16 @@ function actOnSettings(settings) {
 		});
 	}
 
-	if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
-		browser.contextMenus.create({
-			id: ContextMenuType.BOOKMARK_POPUP,
-			title: browser.i18n.getMessage("menu-item_bookmark_popup"),
-			contexts: [ "bookmark" ],
-		});
+	try {
+		if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
+			browser.contextMenus.create({
+				id: ContextMenuType.BOOKMARK_POPUP,
+				title: browser.i18n.getMessage("menu-item_bookmark_popup"),
+				contexts: [ "bookmark" ],
+			});
+		}
+	} catch (e) {
+		console.warn("Feature unavailable: Bookmark context menus");
 	}
 
 	if (settings[SettingsKey.MENU_ITEM_PAGE]) {
