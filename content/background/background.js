@@ -353,6 +353,10 @@ function getMatchingRule(url) {
 	let a = document.createElement("a");
 	a.setAttribute("href", url);
 
+	if (typeof _addonSettings["rules"] === "undefined") {
+		return undefined;
+	}
+
 	for (let rule of _addonSettings["rules"]) {
 		let regex;
 
