@@ -277,12 +277,25 @@ function open_popup(settings, rule) {
 
 	try {
 		browser.windows.create(data).then(wnd => {
-			if (data.left === wnd.left && data.top === wnd.top) {
-				return;
+			// Try to update properties if they were ignored in create
+			let performUpdate = false;
+			let retryData = {};
+
+			if (data.left !== wnd.left || data.top !== wnd.top) {
+				performUpdate = true;
+				retryData["left"] = data.left;
+				retryData["top"] = data.top;
 			}
 
-			// left/top not acted on in create data...
-			browser.windows.update(wnd.id, { "left": data.left, "top": data.top });
+			if (data.width !== wnd.width || data.height !== wnd.height) {
+				performUpdate = true;
+				retryData["width"] = data.width;
+				retryData["height"] = data.height;
+			}
+
+			if (performUpdate) {
+				browser.windows.update(wnd.id, retryData);
+			}
 		});
 	} catch(e) {
 		console.error("Cannot open popup", e);
