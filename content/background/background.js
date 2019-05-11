@@ -33,6 +33,7 @@ const SettingsKey = Object.freeze({
 	POPUP_POSITION_Y_DEFAULT: "popup-position_y_default",
 	RULES: "rules",
 	VERSION: "version",
+	WORKAROUND_FORCE_POSITION: "workaround-force_position",
 });
 
 function main() {
@@ -165,6 +166,7 @@ function migrateSettings(settings, version) {
 			settings[SettingsKey.MENU_ITEM_BOOKMARK] = true;
 			settings[SettingsKey.BUTTON_ACTION] = "MENU";
 			settings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED] = true;
+			settings[SettingsKey.WORKAROUND_FORCE_POSITION] = false;
 			break;
 
 		// INTENTIONAL FALLTHROUGH FOR ALL CASES BELOW
@@ -183,6 +185,7 @@ function migrateSettings(settings, version) {
 				browser.storage.local.remove("popup-position");
 			}
 		case "2":
+			settings[SettingsKey.WORKAROUND_FORCE_POSITION] = true;
 			settings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED] = true;
 
 			if (settings.hasOwnProperty(SettingsKey.RULES)) {
@@ -292,6 +295,11 @@ function open_popup(settings, rule) {
 	try {
 		browser.windows.create(data).then(wnd => {
 			// Try to update properties if they were ignored in create
+
+			if (!_addonSettings[SettingsKey.WORKAROUND_FORCE_POSITION]) {
+				return;
+			}
+
 			let performUpdate = false;
 			let retryData = {};
 

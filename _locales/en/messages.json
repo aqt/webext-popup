@@ -176,6 +176,15 @@
 		"description": "Settings description for popup position column"
 	},
 
+	"settings_workaround": {
+		"message": "Workarounds",
+		"description": "Settings header for workarounds"
+	},
+
+	"settings_workaround_force-position": {
+		"message": "Force position/size - FF < 61 or Resist fingerprinting",
+		"description": "Settings header for workarounds"
+	},
 
 	"button_menu-item_open": {
 		"message": "Open this tab as a popup",
