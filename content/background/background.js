@@ -26,6 +26,7 @@ const SettingsKey = Object.freeze({
 	MENU_ITEM_PAGE: "menu-item_page",
 	MENU_ITEM_TAB: "menu-item_tab",
 	POPUP_POSITION: "popup-position",
+	POPUP_POSITION_DEFAULTS_ENABLED: "popup-position_default_enabled",
 	POPUP_POSITION_HEIGHT_DEFAULT: "popup-position_height_default",
 	POPUP_POSITION_WIDTH_DEFAULT: "popup-position_width_default",
 	POPUP_POSITION_X_DEFAULT: "popup-position_x_default",
@@ -163,9 +164,10 @@ function migrateSettings(settings, version) {
 			settings[SettingsKey.MENU_ITEM_PAGE] = true;
 			settings[SettingsKey.MENU_ITEM_BOOKMARK] = true;
 			settings[SettingsKey.BUTTON_ACTION] = "MENU";
+			settings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED] = true;
 			break;
 
-		// INTENTIONAL FALLTHROUGH
+		// INTENTIONAL FALLTHROUGH FOR ALL CASES BELOW
 		case "none":
 			// Update from old version prior to settings migration system, "version 1"
 			if (settings.hasOwnProperty(SettingsKey.POPUP_POSITION)) {
@@ -180,13 +182,20 @@ function migrateSettings(settings, version) {
 
 				browser.storage.local.remove("popup-position");
 			}
-		// case "2":
+		case "2":
+			settings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED] = true;
+
+			if (settings.hasOwnProperty(SettingsKey.RULES)) {
+				for (let rule of settings[SettingsKey.RULES]) {
+					rule["enabled"] = true;
+				}
+			}
 		// case "3":
 	}
 
 	console.log("Settings migration, from version:"+ version);
 
-	settings[SettingsKey.VERSION] = "2";
+	settings[SettingsKey.VERSION] = "3";
 
 	browser.storage.local.set(settings);
 }
@@ -256,25 +265,27 @@ function open_popup(settings, rule) {
 		w = rule.width;
 		h = rule.height;
 	} else {
-		x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
-		y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
-		w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
-		h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
+		if (_addonSettings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED]) {
+			x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
+			y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
+			w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
+			h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
+		}
 	}
 
-	if (x !== "") {
+	if (typeof x !== "undefined" && x !== "") {
 		data.left = x * 1;
 	}
 
-	if (y !== "") {
+	if (typeof y !== "undefined" && y !== "") {
 		data.top = y * 1;
 	}
 
-	if (w !== "") {
+	if (typeof w !== "undefined" && w !== "") {
 		data.width = w * 1;
 	}
 
-	if (h !== "") {
+	if (typeof h !== "undefined" && h !== "") {
 		data.height = h * 1;
 	}
 
@@ -380,6 +391,10 @@ function getMatchingRule(url) {
 	}
 
 	for (let rule of _addonSettings[SettingsKey.RULES]) {
+		if (!rule["enabled"]) {
+			continue;
+		}
+
 		let regex;
 
 		if (rule["search"].charAt(0) === "/") {

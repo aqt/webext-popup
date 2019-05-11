@@ -77,6 +77,7 @@
 
 				<table>
 					<thead>
+						<th data-i18n-message="settings_popup-position_default_enabled"></th>
 						<th data-i18n-message="settings_popup-position_default_x"></th>
 						<th data-i18n-message="settings_popup-position_default_y"></th>
 						<th data-i18n-message="settings_popup-position_default_width"></th>
@@ -85,6 +86,9 @@
 
 					<tbody>
 						<tr>
+							<td>
+								<input id="popup-position_default_enabled" type="checkbox" data-setting>
+							</td>
 							<td>
 								<input id="popup-position_x_default" type="number" data-setting>
 							</td>
@@ -103,6 +107,7 @@
 
 				<table id="rules" data-setting-list>
 					<thead>
+						<th data-i18n-message="settings_popup-position_enabled"></th>
 						<th data-i18n-message="settings_popup-position_type" data-i18n-title="settings_popup-rule_applies_format"></th>
 						<th></th>
 						<th data-i18n-message="settings_popup-position_x"></th>
@@ -114,6 +119,10 @@
 
 					<tbody>
 						<tr class="hidden" data-setting-list-item-template>
+							<td>
+								<input type="checkbox" data-setting-id="enabled" checked>
+							</td>
+
 							<td>
 								<select data-setting-id="appliestype">
 									<option value="DOMAIN" data-i18n-message="settings_popup-position_type_domain"></option>

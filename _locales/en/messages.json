@@ -101,6 +101,11 @@
 		"description": "Settings description for popup rules"
 	},
 
+	"settings_popup-position_enabled": {
+		"message": "Enabled",
+		"description": "Settings for enable/disable toggle"
+	},
+
 	"settings_popup-position_type": {
 		"message": "Applies to (?)",
 		"description": "Settings header for applies-type"
@@ -123,6 +128,11 @@
 
 	"settings_popup-position_y": {
 		"message": "Y",
+		"description": "Settings header for popup position column"
+	},
+
+	"settings_popup-position_default_enabled": {
+		"message": "Defaults enabled",
 		"description": "Settings header for popup position column"
 	},
 
