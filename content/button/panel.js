@@ -8,6 +8,9 @@ let action_setting = "button-action";
 let submenu_container = document.querySelector("#submenu-restore_window-container");
 let submenu_menu = document.querySelector("#submenu-restore_window-menu");
 
+let settings_button = document.querySelector("#open-settings");
+settings_button.addEventListener("click", e => browser.runtime.openOptionsPage());
+
 function convertThisTab() {
 	browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
 		let tab = tabs[0];

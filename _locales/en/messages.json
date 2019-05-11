@@ -177,6 +177,11 @@
 		"description": "Item in button menu for restoring tab"
 	},
 
+	"button_menu-item_settings": {
+		"message": "Open settings",
+		"description": "Item in button menu for opening settings"
+	},
+
 	"button_menu-item_restore-unknown_title": {
 		"message": "Unknown title",
 		"description": "Error text for item in button menu for restoring tabs"
