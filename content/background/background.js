@@ -25,10 +25,13 @@ const SettingsKey = Object.freeze({
 	MENU_ITEM_LINK: "menu-item_link",
 	MENU_ITEM_PAGE: "menu-item_page",
 	MENU_ITEM_TAB: "menu-item_tab",
+	POPUP_POSITION: "popup-position",
 	POPUP_POSITION_HEIGHT_DEFAULT: "popup-position_height_default",
 	POPUP_POSITION_WIDTH_DEFAULT: "popup-position_width_default",
 	POPUP_POSITION_X_DEFAULT: "popup-position_x_default",
 	POPUP_POSITION_Y_DEFAULT: "popup-position_y_default",
+	RULES: "rules",
+	VERSION: "version",
 });
 
 function main() {
@@ -50,7 +53,7 @@ function addListeners() {
 				version = "new";
 			} else {
 				if (settings.hasOwnProperty("version")) {
-					version = settings["version"];
+					version = settings[SettingsKey.VERSION];
 				} else {
 					version = "none";
 				}
@@ -165,15 +168,15 @@ function migrateSettings(settings, version) {
 		// INTENTIONAL FALLTHROUGH
 		case "none":
 			// Update from old version prior to settings migration system, "version 1"
-			if (settings.hasOwnProperty("popup-position")) {
-				settings["popup-position"].map(rule => {
+			if (settings.hasOwnProperty(SettingsKey.POPUP_POSITION)) {
+				settings[SettingsKey.POPUP_POSITION].map(rule => {
 					rule["appliestype"] = "DOMAIN"
 					rule["search"] = rule["domain"].split(",").map(d => d+",*."+d).join(",");
 					delete rule["domain"];
 				});
 
-				settings["rules"] = settings["popup-position"];
-				delete settings["popup-position"];
+				settings[SettingsKey.RULES] = settings[SettingsKey.POPUP_POSITION];
+				delete settings[SettingsKey.POPUP_POSITION];
 
 				browser.storage.local.remove("popup-position");
 			}
@@ -183,7 +186,7 @@ function migrateSettings(settings, version) {
 
 	console.log("Settings migration, from version:"+ version);
 
-	settings["version"] = "2";
+	settings[SettingsKey.VERSION] = "2";
 
 	browser.storage.local.set(settings);
 }
@@ -372,11 +375,11 @@ function getMatchingRule(url) {
 	let a = document.createElement("a");
 	a.setAttribute("href", url);
 
-	if (typeof _addonSettings["rules"] === "undefined") {
+	if (typeof _addonSettings[SettingsKey.RULES] === "undefined") {
 		return undefined;
 	}
 
-	for (let rule of _addonSettings["rules"]) {
+	for (let rule of _addonSettings[SettingsKey.RULES]) {
 		let regex;
 
 		if (rule["search"].charAt(0) === "/") {
