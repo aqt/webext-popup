@@ -93,11 +93,16 @@
 
 	"settings_popup-position_description": {
 		"message": "If several rules are matching, only the first applies. Default values only apply if no rule is matching.",
-		"description": "Settings description for popup position"
+		"description": "Settings description for default popup rule"
+	},
+
+	"settings_popup-rule_applies_format": {
+		"message": "Single domain\nwww.google.com\n\nMultiple domains\ngoogle.com,www.google.com\n\nDomain + all subdomains\ngoogle.com,*.google.com\n\nRegExp\n/[\\/\\.](google|youtube)\\.com/i",
+		"description": "Settings description for popup rules"
 	},
 
 	"settings_popup-position_type": {
-		"message": "Applies to",
+		"message": "Applies to (?)",
 		"description": "Settings header for applies-type"
 	},
 
