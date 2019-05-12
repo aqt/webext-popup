@@ -33,7 +33,7 @@ const SettingsKey = Object.freeze({
 	POPUP_POSITION_Y_DEFAULT: "popup-position_y_default",
 	RULES: "rules",
 	VERSION: "version",
-	WORKAROUND_FORCE_POSITION: "workaround-force_position",
+	WORKAROUND_FORCE_POSITION: "workaround_force-position",
 	WORKAROUND_OFFSET_SIZE: "workaround_popup-size",
 	WORKAROUND_OFFSET_SIZE_X: "workaround_popup-size_x",
 	WORKAROUND_OFFSET_SIZE_Y: "workaround_popup-size_y",
