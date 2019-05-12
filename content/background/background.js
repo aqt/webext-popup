@@ -34,6 +34,11 @@ const SettingsKey = Object.freeze({
 	RULES: "rules",
 	VERSION: "version",
 	WORKAROUND_FORCE_POSITION: "workaround-force_position",
+	WORKAROUND_OFFSET_SIZE: "workaround_popup-size",
+	WORKAROUND_OFFSET_SIZE_X: "workaround_popup-size_x",
+	WORKAROUND_OFFSET_SIZE_Y: "workaround_popup-size_y",
+	WORKAROUND_OFFSET_SIZE_WIDTH: "workaround_popup-size_width",
+	WORKAROUND_OFFSET_SIZE_HEIGHT: "workaround_popup-size_height",
 });
 
 function main() {
@@ -167,6 +172,7 @@ function migrateSettings(settings, version) {
 			settings[SettingsKey.BUTTON_ACTION] = "MENU";
 			settings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED] = true;
 			settings[SettingsKey.WORKAROUND_FORCE_POSITION] = false;
+			settings[SettingsKey.WORKAROUND_OFFSET_SIZE] = false
 			break;
 
 		// INTENTIONAL FALLTHROUGH FOR ALL CASES BELOW
@@ -261,6 +267,7 @@ function open_popup(settings, rule) {
 	}
 
 	let x, y, w, h;
+	let ox=0, oy=0, ow=0, oh=0;
 
 	if (rule) {
 		x = rule.x;
@@ -276,20 +283,27 @@ function open_popup(settings, rule) {
 		}
 	}
 
+	if (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE]) {
+		ox = (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE_X] || 0) * 1;
+		oy = (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE_Y] || 0) * 1;
+		ow = (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE_WIDTH] || 0) * 1;
+		oh = (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE_HEIGHT] || 0) * 1;
+	}
+
 	if (typeof x !== "undefined" && x !== "") {
-		data.left = x * 1;
+		data.left = x * 1 + ox;
 	}
 
 	if (typeof y !== "undefined" && y !== "") {
-		data.top = y * 1;
+		data.top = y * 1 + oy;
 	}
 
 	if (typeof w !== "undefined" && w !== "") {
-		data.width = w * 1;
+		data.width = w * 1 + ow;
 	}
 
 	if (typeof h !== "undefined" && h !== "") {
-		data.height = h * 1;
+		data.height = h * 1 + oh;
 	}
 
 	try {

@@ -183,7 +183,12 @@
 
 	"settings_workaround_force-position": {
 		"message": "Force position/size - FF < 61 or Resist fingerprinting",
-		"description": "Settings header for workarounds"
+		"description": "Settings item for a bug workaround"
+	},
+
+	"settings_workaround_popup-size": {
+		"message": "Add or subtract pixels to position/size - Invisible window borders on win 10",
+		"description": "Settings item for a bug workaround"
 	},
 
 	"button_menu-item_open": {

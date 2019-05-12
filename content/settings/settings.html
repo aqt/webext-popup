@@ -84,11 +84,24 @@
 								<label for="workaround-force_position" data-i18n-message="settings_workaround_force-position"></label>
 							</td>
 						</tr>
+						<tr>
+							<td>
+								<input id="workaround_popup-size" type="checkbox" data-setting>
+							</td>
+							<td>
+								<label for="workaround_popup-size" data-i18n-message="settings_workaround_popup-size"></label>
+								<br />
+								<input id="workaround_popup-size_x" data-i18n-placeholder="settings_popup-position_x" size="3" type="number" data-setting>
+								<input id="workaround_popup-size_y" data-i18n-placeholder="settings_popup-position_y" size="3" type="number" data-setting>
+								<input id="workaround_popup-size_width" data-i18n-placeholder="settings_popup-position_width" size="3" type="number" data-setting>
+								<input id="workaround_popup-size_height" data-i18n-placeholder="settings_popup-position_height" size="3" type="number" data-setting>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</fieldset>
 
-			<fieldset>
+			<fieldset id="section_rules">
 				<legend data-i18n-message="settings_popup-position"></legend>
 
 				<div class="description" data-i18n-message="settings_popup-position_description"></div>

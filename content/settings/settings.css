@@ -2,7 +2,7 @@
 	padding-right: 4px;
 }
 
-input[type="number"] {
+#section_rules input[type="number"] {
 	width: 100%;
 }
 
