@@ -266,7 +266,7 @@ function open_popup(settings, rule) {
 		rule = getMatchingRule(url);
 	}
 
-	let x, y, w, h;
+	let x="", y="", w="", h="";
 	let ox=0, oy=0, ow=0, oh=0;
 
 	if (rule) {
@@ -274,11 +274,22 @@ function open_popup(settings, rule) {
 		y = rule.y;
 		w = rule.width;
 		h = rule.height;
-	} else {
-		if (_addonSettings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED]) {
+	}
+
+	if (_addonSettings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED]) {
+		if (x === "") {
 			x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
+		}
+
+		if (y === "") {
 			y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
+		}
+
+		if (w === "") {
 			w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
+		}
+
+		if (h === "") {
 			h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
 		}
 	}
@@ -290,19 +301,19 @@ function open_popup(settings, rule) {
 		oh = (_addonSettings[SettingsKey.WORKAROUND_OFFSET_SIZE_HEIGHT] || 0) * 1;
 	}
 
-	if (typeof x !== "undefined" && x !== "") {
+	if (x !== "") {
 		data.left = x * 1 + ox;
 	}
 
-	if (typeof y !== "undefined" && y !== "") {
+	if (y !== "") {
 		data.top = y * 1 + oy;
 	}
 
-	if (typeof w !== "undefined" && w !== "") {
+	if (w !== "") {
 		data.width = w * 1 + ow;
 	}
 
-	if (typeof h !== "undefined" && h !== "") {
+	if (h !== "") {
 		data.height = h * 1 + oh;
 	}
 

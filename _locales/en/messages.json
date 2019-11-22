@@ -92,7 +92,7 @@
 	},
 
 	"settings_popup-position_description": {
-		"message": "If several rules are matching, only the first applies. Default values only apply if no rule is matching.",
+		"message": "If several rules are matching, only the first applies. Fields left empty will use the default value if enabled",
 		"description": "Settings description for default popup rule"
 	},
 
