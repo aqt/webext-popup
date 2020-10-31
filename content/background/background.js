@@ -467,31 +467,39 @@ function actOnSettings(settings) {
 	browser.contextMenus.removeAll();
 
 	if (settings[SettingsKey.MENU_ITEM_TAB]) {
-		browser.contextMenus.create({
-			id: ContextMenuType.TAB_POPUP,
-			title: browser.i18n.getMessage("menu_item_tab_popup"),
-			contexts: [ "tab" ],
-		});
+		try {
+			browser.contextMenus.create({
+				id: ContextMenuType.TAB_POPUP,
+				title: browser.i18n.getMessage("menu_item_tab_popup"),
+				contexts: [ "tab" ],
+			});
+		} catch (e) {
+			console.warn("Feature unavailable: Tab context menus");
+		}
 	}
 
 	if (settings[SettingsKey.MENU_ITEM_LINK]) {
-		browser.contextMenus.create({
-			id: ContextMenuType.LINK_POPUP,
-			title: browser.i18n.getMessage("menu_item_link_popup"),
-			contexts: [ "link" ],
-		});
+		try {
+			browser.contextMenus.create({
+				id: ContextMenuType.LINK_POPUP,
+				title: browser.i18n.getMessage("menu_item_link_popup"),
+				contexts: [ "link" ],
+			});
+		} catch (e) {
+			console.warn("Feature unavailable: Link context menus");
+		}
 	}
 
-	try {
-		if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
+	if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
+		try {
 			browser.contextMenus.create({
 				id: ContextMenuType.BOOKMARK_POPUP,
 				title: browser.i18n.getMessage("menu_item_bookmark_popup"),
 				contexts: [ "bookmark" ],
 			});
+		} catch (e) {
+			console.warn("Feature unavailable: Bookmark context menus");
 		}
-	} catch (e) {
-		console.warn("Feature unavailable: Bookmark context menus");
 	}
 
 	if (settings[SettingsKey.MENU_ITEM_PAGE]) {
