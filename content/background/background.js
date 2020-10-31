@@ -72,7 +72,7 @@ function addListeners() {
 
 	// Apply settings after changes
 	browser.storage.onChanged.addListener((changes, area) => {
-		let settings = {};
+		let settings = _addonSettings;
 
 		for (key in changes) {
 			settings[key] = changes[key].newValue;
