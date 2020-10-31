@@ -24,7 +24,10 @@
 	],
 
 	"background": {
-		"scripts": [ "content/background/background.js" ]
+		"scripts": [
+			"content/_shared/browser-polyfill.min.js",
+			"content/background/background.js"
+		]
 	},
 
 	"browser_action": {
