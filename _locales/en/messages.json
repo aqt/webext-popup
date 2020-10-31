@@ -10,27 +10,27 @@
 	},
 
 
-	"menu-item_bookmark_popup": {
+	"menu_item_bookmark_popup": {
 		"message": "Open as a popup",
 		"description": "Menu item for bookmarks"
 	},
 
-	"menu-item_link_popup": {
+	"menu_item_link_popup": {
 		"message": "Open as a popup",
 		"description": "Menu item for links"
 	},
 
-	"menu-item_page_popup": {
+	"menu_item_page_popup": {
 		"message": "Open as a popup",
 		"description": "Menu item for pages"
 	},
 
-	"menu-item_page_restore": {
+	"menu_item_page_restore": {
 		"message": "Restore to window",
 		"description": "Menu item for pages"
 	},
 
-	"menu-item_tab_popup": {
+	"menu_item_tab_popup": {
 		"message": "Move to a new popup",
 		"description": "Menu item for tabs"
 	},
@@ -41,27 +41,27 @@
 		"description": "Settings page title"
 	},
 
-	"settings_context-menus": {
+	"settings_context_menus": {
 		"message": "Context menus",
 		"description": "Settings section title for context menus"
 	},
 
-	"settings_context-menus_bookmarks": {
+	"settings_context_menus_bookmarks": {
 		"message": "Show on bookmarks",
 		"description": "Settings label for context menus on Bookmarks"
 	},
 
-	"settings_context-menus_links": {
+	"settings_context_menus_links": {
 		"message": "Show on links",
 		"description": "Settings label for context menus on Links"
 	},
 
-	"settings_context-menus_pages": {
+	"settings_context_menus_pages": {
 		"message": "Show on pages",
 		"description": "Settings label for context menus on Pages"
 	},
 
-	"settings_context-menus_tabs": {
+	"settings_context_menus_tabs": {
 		"message": "Show on tabs",
 		"description": "Settings label for context menus on Tabs"
 	},
@@ -71,107 +71,107 @@
 		"description": "Settings section title for button action"
 	},
 
-	"settings_button-action": {
+	"settings_button_action": {
 		"message": "Button action",
 		"description": "Settings label for button action"
 	},
 
-	"settings_button-action_menu": {
+	"settings_button_action_menu": {
 		"message": "Menu",
 		"description": "Settings label for button action type"
 	},
 
-	"settings_button-action_popup": {
+	"settings_button_action_popup": {
 		"message": "Create popup of current tab",
 		"description": "Settings label for button action"
 	},
 
-	"settings_popup-position": {
+	"settings_popup_position": {
 		"message": "Popup rules",
 		"description": "Settings label for popup position"
 	},
 
-	"settings_popup-position_description": {
+	"settings_popup_position_description": {
 		"message": "If several rules are matching, only the first applies. Fields left empty will use the default value if enabled",
 		"description": "Settings description for default popup rule"
 	},
 
-	"settings_popup-rule_applies_format": {
+	"settings_popup_rule_applies_format": {
 		"message": "Single domain\nwww.google.com\n\nMultiple domains\ngoogle.com,www.google.com\n\nDomain + all subdomains\ngoogle.com,*.google.com\n\nRegExp\n/[\\/\\.](google|youtube)\\.com/i",
 		"description": "Settings description for popup rules"
 	},
 
-	"settings_popup-position_enabled": {
+	"settings_popup_position_enabled": {
 		"message": "Enabled",
 		"description": "Settings for enable/disable toggle"
 	},
 
-	"settings_popup-position_type": {
+	"settings_popup_position_type": {
 		"message": "Applies to (?)",
 		"description": "Settings header for applies-type"
 	},
 
-	"settings_popup-position_type_domain": {
+	"settings_popup_position_type_domain": {
 		"message": "Domain",
 		"description": "Settings value for applies-type domain"
 	},
 
-	"settings_popup-position_type_url": {
+	"settings_popup_position_type_url": {
 		"message": "URL",
 		"description": "Settings value for applies-type URL"
 	},
 
-	"settings_popup-position_x": {
+	"settings_popup_position_x": {
 		"message": "X",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_y": {
+	"settings_popup_position_y": {
 		"message": "Y",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_default_enabled": {
+	"settings_popup_position_default_enabled": {
 		"message": "Defaults enabled",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_default_x": {
+	"settings_popup_position_default_x": {
 		"message": "Default X",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_default_y": {
+	"settings_popup_position_default_y": {
 		"message": "Default Y",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_default_width": {
+	"settings_popup_position_default_width": {
 		"message": "Default width",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_default_height": {
+	"settings_popup_position_default_height": {
 		"message": "Default height",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_width": {
+	"settings_popup_position_width": {
 		"message": "Width",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_height": {
+	"settings_popup_position_height": {
 		"message": "Height",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_autopopup": {
+	"settings_popup_position_autopopup": {
 		"message": "Auto-Popup",
 		"description": "Settings header for popup position column"
 	},
 
-	"settings_popup-position_domain_description": {
+	"settings_popup_position_domain_description": {
 		"message": "Entries without a subdomain (e.g. www) also apply to all of its subdomains. Multiple domains can be used by separating the entries with a comma (,). Example value: github.com,www.google.com",
 		"description": "Settings description for popup position column"
 	},
@@ -181,32 +181,32 @@
 		"description": "Settings header for workarounds"
 	},
 
-	"settings_workaround_force-position": {
+	"settings_workaround_force_position": {
 		"message": "Force position/size - FF < 61 or Resist fingerprinting",
 		"description": "Settings item for a bug workaround"
 	},
 
-	"settings_workaround_popup-size": {
+	"settings_workaround_popup_size": {
 		"message": "Add or subtract pixels to position/size - Invisible window borders on win 10",
 		"description": "Settings item for a bug workaround"
 	},
 
-	"button_menu-item_open": {
+	"button_menu_item_open": {
 		"message": "Open this tab as a popup",
 		"description": "Item in button menu for converting current tab"
 	},
 
-	"button_menu-item_restore": {
+	"button_menu_item_restore": {
 		"message": "Restore to this window...",
 		"description": "Item in button menu for restoring tab"
 	},
 
-	"button_menu-item_settings": {
+	"button_menu_item_settings": {
 		"message": "Open settings",
 		"description": "Item in button menu for opening settings"
 	},
 
-	"button_menu-item_restore-unknown_title": {
+	"button_menu_item_restore_unknown_title": {
 		"message": "Unknown title",
 		"description": "Error text for item in button menu for restoring tabs"
 	}

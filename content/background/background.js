@@ -469,7 +469,7 @@ function actOnSettings(settings) {
 	if (settings[SettingsKey.MENU_ITEM_TAB]) {
 		browser.contextMenus.create({
 			id: ContextMenuType.TAB_POPUP,
-			title: browser.i18n.getMessage("menu-item_tab_popup"),
+			title: browser.i18n.getMessage("menu_item_tab_popup"),
 			contexts: [ "tab" ],
 		});
 	}
@@ -477,7 +477,7 @@ function actOnSettings(settings) {
 	if (settings[SettingsKey.MENU_ITEM_LINK]) {
 		browser.contextMenus.create({
 			id: ContextMenuType.LINK_POPUP,
-			title: browser.i18n.getMessage("menu-item_link_popup"),
+			title: browser.i18n.getMessage("menu_item_link_popup"),
 			contexts: [ "link" ],
 		});
 	}
@@ -486,7 +486,7 @@ function actOnSettings(settings) {
 		if (settings[SettingsKey.MENU_ITEM_BOOKMARK]) {
 			browser.contextMenus.create({
 				id: ContextMenuType.BOOKMARK_POPUP,
-				title: browser.i18n.getMessage("menu-item_bookmark_popup"),
+				title: browser.i18n.getMessage("menu_item_bookmark_popup"),
 				contexts: [ "bookmark" ],
 			});
 		}
@@ -503,13 +503,13 @@ function actOnSettings(settings) {
 
 		browser.contextMenus.create({
 			id: ContextMenuType.PAGE_POPUP,
-			title: browser.i18n.getMessage("menu-item_page_popup"),
+			title: browser.i18n.getMessage("menu_item_page_popup"),
 			contexts: [ "page" ],
 		});
 
 		browser.contextMenus.create({
 			id: ContextMenuType.PAGE_RESTORE,
-			title: browser.i18n.getMessage("menu-item_page_restore"),
+			title: browser.i18n.getMessage("menu_item_page_restore"),
 			contexts: [ "page" ],
 		});
 

@@ -29,7 +29,7 @@ function buildMenu() {
 	function appendWindowItem(wnd, tab) {
 		// Firefox 56.0.2 doesn't seem to be able to retrieve tab.title, but can retrieve window.title
 		let wndTitle = wnd ? wnd.title : undefined;
-		let title = tab.title || wndTitle || browser.i18n.getMessage("button_menu-item_restore-unknown_title");
+		let title = tab.title || wndTitle || browser.i18n.getMessage("button_menu_item_restore-unknown_title");
 
 		let li = document.createElement("li");
 		li.classList.add("menu-item");
