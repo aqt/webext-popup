@@ -278,19 +278,19 @@ function open_popup(settings, rule) {
 
 	if (_addonSettings[SettingsKey.POPUP_POSITION_DEFAULTS_ENABLED]) {
 		if (x === "") {
-			x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT];
+			x = _addonSettings[SettingsKey.POPUP_POSITION_X_DEFAULT] || "";
 		}
 
 		if (y === "") {
-			y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT];
+			y = _addonSettings[SettingsKey.POPUP_POSITION_Y_DEFAULT] || "";
 		}
 
 		if (w === "") {
-			w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT];
+			w = _addonSettings[SettingsKey.POPUP_POSITION_WIDTH_DEFAULT] || "";
 		}
 
 		if (h === "") {
-			h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT];
+			h = _addonSettings[SettingsKey.POPUP_POSITION_HEIGHT_DEFAULT] || "";
 		}
 	}
 
