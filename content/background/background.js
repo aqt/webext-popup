@@ -148,7 +148,15 @@ function addListeners() {
 
 	// Listen for tab url changes
 	try {
-		browser.tabs.onUpdated.addListener(handleUpdatedTab, { "properties": [ "status" ] }); // "url" would be preferred but is not allowed
+		// FF 87+
+		browser.tabs.onUpdated.addListener(handleUpdatedTab, {
+			properties: ["url"],
+		});
+
+		// FF 87-
+		browser.tabs.onUpdated.addListener(handleUpdatedTab, {
+			properties: ["status"],
+		});
 	} catch (e) {
 		// Fallback due to second parameter added in version 61
 		browser.tabs.onUpdated.addListener(handleUpdatedTab);
