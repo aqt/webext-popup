@@ -148,7 +148,7 @@ function addListeners() {
 
 	// Listen for tab url changes
 	try {
-		// FF 87+
+		// FF 88+
 		browser.tabs.onUpdated.addListener(handleUpdatedTab, {
 			properties: ["url"],
 		});
