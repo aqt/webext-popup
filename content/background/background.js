@@ -454,7 +454,15 @@ function getMatchingRule(url) {
 		}
 
 		if (rule["appliestype"] === "DOMAIN") {
-			if (~a.hostname.search(regex)) {
+			let origin = a.hostname;
+
+			let includePort = ~rule["search"].indexOf(":");
+
+			if (includePort && a.port) {
+				origin += ":" + a.port;
+			}
+
+			if (~origin.search(regex)) {
 				return rule;
 			}
 		} else {
